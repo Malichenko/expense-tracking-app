@@ -1,11 +1,12 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { BottomTabNavigator } from "../navigation";
+
+import { RootStackNavigator } from "../navigation";
 
 export const RouterProvider = () => {
   return (
     <NavigationContainer>
-      <BottomTabNavigator />
+      <RootStackNavigator />
     </NavigationContainer>
   );
 };
