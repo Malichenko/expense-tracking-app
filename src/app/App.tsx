@@ -1,19 +1,13 @@
-import { StyleSheet } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import React from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { RouterProvider } from "./providers";
 
 export const App = () => {
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <StatusBar style="auto" />
-      </SafeAreaView>
+      <StatusBar style="auto" />
+      <RouterProvider />
     </SafeAreaProvider>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});

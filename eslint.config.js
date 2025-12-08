@@ -35,6 +35,9 @@ export default [
         },
         project: "./tsconfig.json",
       },
+      globals: {
+        console: "readonly",
+      },
     },
     plugins: {
       "@typescript-eslint": tsPlugin,
@@ -67,6 +70,7 @@ export default [
     rules: {
       ...tsPlugin.configs["recommended"].rules,
       "react/react-in-jsx-scope": "off",
+      "no-console": "error",
       "@typescript-eslint/no-require-imports": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
@@ -83,7 +87,7 @@ export default [
           rules: [
             {
               from: "app",
-              allow: ["screens", "widgets", "features", "entities", "shared"],
+              allow: ["app", "screens", "widgets", "features", "entities", "shared"],
             },
             {
               from: "screens",
