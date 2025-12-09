@@ -1,21 +1,12 @@
 import { type FC } from "react";
-import { StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View } from "react-native";
 
 import theme from "@shared/config/theme";
 
 import { type ScreenLayoutProps } from "./types";
 
-export const ScreenLayout: FC<ScreenLayoutProps> = ({
-  children,
-  style,
-  edges = ["top"],
-}) => {
-  return (
-    <SafeAreaView edges={edges} style={[styles.container, style]}>
-      {children}
-    </SafeAreaView>
-  );
+export const ScreenLayout: FC<ScreenLayoutProps> = ({ children, style }) => {
+  return <View style={[styles.container, style]}>{children}</View>;
 };
 
 const styles = StyleSheet.create({
