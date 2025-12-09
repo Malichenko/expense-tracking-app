@@ -23,8 +23,5 @@ export const stacks: StackConfig[] = [
   {
     name: AppRoutes.ManageExpense,
     component: ManageExpenseScreen,
-    options: {
-      headerShown: false,
-    },
   },
 ];

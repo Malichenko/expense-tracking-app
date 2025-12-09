@@ -5,7 +5,7 @@ import { RouterProvider } from "./providers";
 export const App = () => {
   return (
     <>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
       <RouterProvider />
     </>
   );

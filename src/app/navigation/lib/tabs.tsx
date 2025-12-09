@@ -17,6 +17,7 @@ export const tabs: TabConfig[] = [
     component: HomeScreen,
     options: {
       title: "Recent Expenses",
+      tabBarLabel: "Recent",
       tabBarIcon: IconTodayView,
     },
   },
