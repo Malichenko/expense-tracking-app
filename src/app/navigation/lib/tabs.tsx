@@ -13,7 +13,7 @@ type TabConfig<P = object> = {
 
 export const tabs: TabConfig[] = [
   {
-    name: AppRoutes.Home,
+    name: AppRoutes.RecentExpenses,
     component: HomeScreen,
     options: {
       title: "Recent Expenses",
@@ -21,7 +21,7 @@ export const tabs: TabConfig[] = [
     },
   },
   {
-    name: AppRoutes.Settings,
+    name: AppRoutes.AllExpenses,
     component: AllExpensesScreen,
     options: {
       title: "All Expenses",

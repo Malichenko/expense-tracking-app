@@ -1,5 +1,6 @@
 export enum AppRoutes {
   MainTabs = "MainTabs",
-  Home = "Home",
-  Settings = "Settings",
+  RecentExpenses = "RecentExpenses",
+  AllExpenses = "AllExpenses",
+  ManageExpense = "ManageExpense",
 }
