@@ -1,11 +1,12 @@
 import { Expense } from "../../model/types";
-import { FlatList, Text } from "react-native";
+import { FlatList } from "react-native";
+import { ExpenseItem } from "./components";
 
 export const ExpensesList = ({ expenses }: { expenses: Expense[] }) => {
   return (
     <FlatList
       data={expenses}
-      renderItem={({ item }) => <Text>{item.description}</Text>}
+      renderItem={ExpenseItem}
       keyExtractor={(item) => item.id}
     />
   );
