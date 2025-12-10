@@ -1,6 +1,6 @@
 import { Expense } from "../../model/types";
-import { FlatList, StyleSheet, Text } from "react-native";
-import { ExpenseItem } from "./components";
+import { FlatList, StyleSheet } from "react-native";
+import { ExpenseItem, NoItems } from "./components";
 import theme from "@shared/config/theme";
 
 interface ExpensesListProps {
@@ -22,7 +22,7 @@ export const ExpensesList = ({
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
-      ListEmptyComponent={<Text>No expenses found</Text>}
+      ListEmptyComponent={<NoItems />}
       bounces={false}
     />
   );
@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
+    flex: 1,
     gap: theme.spacing.x2,
   },
 });
