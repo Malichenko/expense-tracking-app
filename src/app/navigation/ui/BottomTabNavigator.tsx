@@ -3,8 +3,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { tabs } from "../lib/tabs";
 import theme from "@shared/config/theme";
 import { AddExpenseButton } from "@features/add-expense";
+import { RootStackParamList } from "@shared/routes";
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<RootStackParamList>();
 
 export const BottomTabNavigator = () => {
   return (
