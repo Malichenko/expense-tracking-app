@@ -1,6 +1,11 @@
 import { ScreenLayout } from "@shared/ui/screen-layout";
 
-import { useExpenseById, useExpenseDelete } from "@entities/expence";
+import {
+  useExpenseAdd,
+  useExpenseById,
+  useExpenseDelete,
+  useExpenseUpdate,
+} from "@entities/expence";
 import { IconButton } from "@shared/ui/icon-button";
 import theme from "@shared/config/theme";
 import { StyleSheet, View, TextInput, Text } from "react-native";
@@ -8,6 +13,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppRoutes, RootStackParamList } from "@shared/routes";
 import { Button } from "@shared/ui";
 import { Expense } from "@entities/expence";
+import { conditional, pipe } from "remeda";
 
 const ExpenseForm = ({ expense }: { expense?: Partial<Expense> }) => {
   return (
@@ -50,6 +56,8 @@ export const ManageExpenseScreen = ({
   const expenseId = route.params?.expenseId;
   const isEditing = !!expenseId;
   const expenseDelete = useExpenseDelete();
+  const expenseAdd = useExpenseAdd();
+  const expenseUpdate = useExpenseUpdate();
 
   const expense = useExpenseById(expenseId);
 
@@ -67,6 +75,25 @@ export const ManageExpenseScreen = ({
   };
 
   const confirmHandler = () => {
+    pipe(
+      expense,
+      conditional(
+        [(expense) => !!expense, (expense) => expenseUpdate(expense)],
+        [
+          (expense) => !expense,
+          () => {
+            const random = Math.floor(Math.random() * 10000);
+
+            expenseAdd({
+              id: random.toString(),
+              amount: random,
+              date: new Date(),
+              description: "Test " + random,
+            });
+          },
+        ]
+      )
+    );
     goBack();
   };
 

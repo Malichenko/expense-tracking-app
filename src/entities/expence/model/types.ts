@@ -7,6 +7,7 @@ export type Expense = {
 
 export interface ExpenseStore {
   expenses: Expense[];
+  getExpenses: () => Expense[];
   addExpense: (expense: Expense) => void;
   removeExpense: (id: string) => void;
   updateExpense: (expense: Expense) => void;

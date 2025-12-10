@@ -86,8 +86,10 @@ const DUMMY_EXPENSES = [
 ];
 
 const useExpenseStore = create<ExpenseStore>()(
-  immer((set) => ({
+  immer((set, get) => ({
     expenses: DUMMY_EXPENSES,
+    getExpenses: () =>
+      get().expenses.sort((a, b) => a.date.getTime() - b.date.getTime()),
     addExpense: (expense) =>
       set((state) => {
         state.expenses.push(expense);
@@ -117,13 +119,28 @@ export const useExpenseById = (id?: string) =>
 export const useExpenseDelete = () =>
   useExpenseStore(useCallback((state) => state.removeExpense, []));
 
+export const useExpenseAdd = () =>
+  useExpenseStore(useCallback((state) => state.addExpense, []));
+
+export const useExpenseUpdate = () =>
+  useExpenseStore(useCallback((state) => state.updateExpense, []));
+
 export const useExpenses = () =>
-  useExpenseStore(useCallback((state) => state.expenses, []));
+  useExpenseStore(
+    useCallback(
+      useShallow((state) =>
+        [...state.expenses].sort((a, b) => b.date.getTime() - a.date.getTime())
+      ),
+      []
+    )
+  );
 
 const recentExpensesSelector =
   (days = 7) =>
   (state: ExpenseStore) =>
-    state.expenses.filter(({ date }) => date >= dateMinusDays(days));
+    state.expenses
+      .filter(({ date }) => date >= dateMinusDays(days))
+      .sort((a, b) => b.date.getTime() - a.date.getTime());
 
 export const useRecentExpenses = (days = 7) =>
   pipe(
