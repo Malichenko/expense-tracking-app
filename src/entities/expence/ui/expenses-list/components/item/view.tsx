@@ -1,12 +1,13 @@
 import { Text, View, StyleSheet, Pressable } from "react-native";
 import { ExpenseItemContract } from "./types";
-import { numberToCurrencyFormatter } from "@shared/utils";
+import { numberToCurrencyFormatter } from "@shared/utils/currency";
+import { dateFormatter } from "@shared/utils/date";
 import theme from "@shared/config/theme";
-import { format } from "date-fns";
 import { Card } from "@shared/ui";
 
 export const ExpenseItem: ExpenseItemContract = ({ item }) => {
   const formattedAmount = numberToCurrencyFormatter()(item.amount);
+  const formattedDate = dateFormatter()(item.date);
 
   return (
     <Pressable>
@@ -15,9 +16,7 @@ export const ExpenseItem: ExpenseItemContract = ({ item }) => {
           <Text style={[styles.textBase, styles.description]}>
             {item.description}
           </Text>
-          <Text style={[styles.textBase, styles.date]}>
-            {format(item.date, "dd MMM yyyy")}
-          </Text>
+          <Text style={[styles.textBase, styles.date]}>{formattedDate}</Text>
         </View>
 
         <View style={styles.amountBox}>

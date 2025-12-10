@@ -1,4 +1,4 @@
-import { numberToCurrencyFormatter } from "@shared/utils";
+import { numberToCurrencyFormatter } from "@shared/utils/currency";
 import { Text, StyleSheet } from "react-native";
 import { sumBy, pipe } from "remeda";
 import { ExpenceSummaryContract } from "./types";
