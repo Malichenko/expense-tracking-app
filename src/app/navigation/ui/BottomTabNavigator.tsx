@@ -10,11 +10,11 @@ export const BottomTabNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: theme.palette.primary[50],
+          backgroundColor: theme.palette.primary[100],
         },
-        headerTintColor: theme.palette.neutral[10],
+        headerTintColor: theme.palette.accent[50],
         tabBarStyle: {
-          backgroundColor: theme.palette.primary[50],
+          backgroundColor: theme.palette.primary[100],
           borderTopWidth: 1,
           elevation: 0,
         },

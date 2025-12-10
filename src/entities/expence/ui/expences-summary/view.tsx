@@ -1,15 +1,10 @@
 import { numberToCurrencyFormatter } from "@shared/utils";
-import { Expense } from "../../model/types";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { sumBy, pipe } from "remeda";
-import { FC } from "react";
+import { ExpenceSummaryContract } from "./types";
+import theme from "@shared/config/theme";
 
-interface ExpenceSummaryProps {
-  periodName: string;
-  expenses: Expense[];
-}
-
-export const ExpenceSummary: FC<ExpenceSummaryProps> = ({
+export const ExpenceSummary: ExpenceSummaryContract = ({
   periodName,
   expenses,
 }) => {
@@ -20,9 +15,34 @@ export const ExpenceSummary: FC<ExpenceSummaryProps> = ({
   );
 
   return (
-    <View>
-      <Text>{periodName}</Text>
-      <Text>{formattedSum}</Text>
+    <View style={styles.container}>
+      <Text style={styles.period}>{periodName}</Text>
+      <Text style={styles.amount}>{formattedSum}</Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    padding: theme.spacing.x2,
+    backgroundColor: theme.palette.primary[10],
+    borderRadius: theme.spacing.x2,
+    elevation: 4,
+    shadowColor: theme.palette.shadow.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  period: {
+    fontSize: theme.fontSize.sm,
+    color: theme.palette.primary[50],
+  },
+  amount: {
+    fontSize: theme.fontSize.base,
+    fontWeight: "bold",
+    color: theme.palette.primary[70],
+  },
+});

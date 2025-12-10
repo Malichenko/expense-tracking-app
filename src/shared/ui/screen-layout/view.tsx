@@ -14,5 +14,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: theme.spacing.x3,
     gap: theme.spacing.x4,
+    backgroundColor: theme.palette.primary[80],
   },
 });
