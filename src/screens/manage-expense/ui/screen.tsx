@@ -6,6 +6,8 @@ import theme from "@shared/config/theme";
 import { StyleSheet, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppRoutes, RootStackParamList } from "@shared/routes";
+import { Button } from "@shared/ui";
+
 export const ManageExpenseScreen = ({
   route,
 }: NativeStackScreenProps<RootStackParamList, AppRoutes.ManageExpense>) => {
@@ -21,6 +23,7 @@ export const ManageExpenseScreen = ({
 
   return (
     <ScreenLayout style={styles.container}>
+      <Button onPress={() => {}}>asdfasdf</Button>
       {isEditing && (
         <View style={styles.deleteContainer}>
           <IconButton
