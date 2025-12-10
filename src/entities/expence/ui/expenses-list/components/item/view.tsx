@@ -47,12 +47,13 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.xs,
   },
   amountBox: {
-    paddingHorizontal: theme.spacing.x3,
-    paddingVertical: theme.spacing.x1,
+    paddingHorizontal: theme.spacing.x2,
+    paddingVertical: theme.spacing.x3,
     backgroundColor: theme.palette.neutral[10],
     borderRadius: theme.spacing.x2,
     justifyContent: "center",
     alignItems: "center",
+    minWidth: theme.spacing.x22,
   },
   amount: {
     fontSize: theme.fontSize.base,
