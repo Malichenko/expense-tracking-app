@@ -1,25 +1,25 @@
 import {
+  NativeStackNavigationProp,
   type NativeStackNavigationOptions,
-  type NativeStackScreenProps,
 } from "@react-navigation/native-stack";
-import { type FC } from "react";
-
+import { FC } from "react";
 import { AppRoutes, RootStackParamList } from "@shared/routes";
-
 import { BottomTabNavigator } from "../ui/BottomTabNavigator";
 import { ManageExpenseScreen } from "@screens/manage-expense";
 import * as ReactNavigation from "@react-navigation/native";
+import { RouteProp } from "@react-navigation/native";
 
-type StackConfig<P = object> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type StackConfig<P = any> = {
   name: AppRoutes;
   component: FC<P>;
   options?:
     | NativeStackNavigationOptions
-    | ((
-        props: NativeStackScreenProps<RootStackParamList, AppRoutes> & {
-          theme: ReactNavigation.Theme;
-        }
-      ) => NativeStackNavigationOptions);
+    | ((props: {
+        route: RouteProp<RootStackParamList, AppRoutes>;
+        navigation: NativeStackNavigationProp<RootStackParamList, AppRoutes>;
+        theme: ReactNavigation.Theme;
+      }) => NativeStackNavigationOptions);
 };
 
 export const stacks: StackConfig[] = [

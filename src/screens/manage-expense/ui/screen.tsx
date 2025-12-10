@@ -1,13 +1,14 @@
 import { ScreenLayout } from "@shared/ui/screen-layout";
-import { ScreenProps } from "@shared/routes";
+
 import { useExpenseById } from "@entities/expence";
 import { IconButton } from "@shared/ui/icon-button";
 import theme from "@shared/config/theme";
 import { StyleSheet, View } from "react-native";
-
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AppRoutes, RootStackParamList } from "@shared/routes";
 export const ManageExpenseScreen = ({
   route,
-}: ScreenProps["ManageExpense"]) => {
+}: NativeStackScreenProps<RootStackParamList, AppRoutes.ManageExpense>) => {
   const expenseId = route.params?.expenseId;
   const isEditing = !!expenseId;
 
