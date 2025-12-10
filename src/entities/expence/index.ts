@@ -1,4 +1,4 @@
 export type { Expense } from "./model/types";
 export { ExpenceSummary } from "./ui/expences-summary";
 export { ExpensesList } from "./ui/expenses-list";
-export { useExpenseById } from "./model/store";
+export * from "./model/store";

@@ -1,15 +1,15 @@
 import theme from "@shared/config/theme";
 
 export const ICON_SIZES = {
-  small: 20,
-  medium: 24,
-  large: 32,
+  small: 24,
+  medium: 32,
+  large: 40,
 } as const;
 
 export const BUTTON_SIZES = {
-  small: theme.spacing.x5,
-  medium: theme.spacing.x6,
-  large: theme.spacing.x8,
+  small: theme.spacing.x6,
+  medium: theme.spacing.x8,
+  large: theme.spacing.x10,
 } as const;
 
 export const BUTTON_STATES = {
