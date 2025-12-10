@@ -44,4 +44,16 @@ export const styles = StyleSheet.create({
   textDanger: {
     color: theme.palette.neutral[10],
   },
+  buttonFlat: {
+    backgroundColor: theme.palette.neutral[20],
+    borderColor: theme.palette.primary[30],
+    borderWidth: 1,
+    elevation: 0,
+    shadowColor: "transparent",
+    shadowOpacity: 0,
+    shadowRadius: 0,
+  },
+  textFlat: {
+    color: theme.palette.primary[80],
+  },
 });

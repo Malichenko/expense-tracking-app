@@ -7,12 +7,14 @@ const BUTTON_MAP: Record<Variant, ViewStyle> = {
   primary: styles.buttonPrimary,
   secondary: styles.buttonSecondary,
   danger: styles.buttonDanger,
+  flat: styles.buttonFlat,
 };
 
 const TEXT_MAP: Record<Variant, TextStyle> = {
   primary: styles.textPrimary,
   secondary: styles.textSecondary,
   danger: styles.textDanger,
+  flat: styles.textFlat,
 };
 
 export const getButtonStyle = (variant: Variant): ViewStyle => {
