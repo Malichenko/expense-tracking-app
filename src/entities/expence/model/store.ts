@@ -10,9 +10,84 @@ const now = Date.now();
 const dateMinusDays = (days: number) =>
   new Date(now - days * 24 * 60 * 60 * 1000);
 
+const DUMMY_EXPENSES = [
+  {
+    id: "e1",
+    amount: 100.71,
+    date: dateMinusDays(1),
+    description: "A pair of shoes",
+  },
+  {
+    id: "e2",
+    amount: 200.0,
+    date: dateMinusDays(2),
+    description: "A new phone",
+  },
+  {
+    id: "e3",
+    amount: 300.04,
+    date: dateMinusDays(3),
+    description: "A new laptop",
+  },
+  {
+    id: "e4",
+    amount: 400.06,
+    date: dateMinusDays(4),
+    description: "A new car",
+  },
+  {
+    id: "e5",
+    amount: 500.08,
+    date: dateMinusDays(5),
+    description: "A new house",
+  },
+  {
+    id: "e6",
+    amount: 600.1,
+    date: dateMinusDays(6),
+    description: "A new boat",
+  },
+  {
+    id: "e7",
+    amount: 700.12,
+    date: dateMinusDays(7),
+    description: "A new plane",
+  },
+  {
+    id: "e8",
+    amount: 800.14,
+    date: dateMinusDays(8),
+    description: "A new train",
+  },
+  {
+    id: "e9",
+    amount: 900.16,
+    date: dateMinusDays(9),
+    description: "A new ship",
+  },
+  {
+    id: "e10",
+    amount: 1000.18,
+    date: dateMinusDays(10),
+    description: "A new rocket",
+  },
+  {
+    id: "e11",
+    amount: 1100.2,
+    date: dateMinusDays(11),
+    description: "A new spaceship",
+  },
+  {
+    id: "e12",
+    amount: 1200.22,
+    date: dateMinusDays(12),
+    description: "A new spaceship",
+  },
+];
+
 const useExpenseStore = create<ExpenseStore>()(
   immer((set, get) => ({
-    expenses: [],
+    expenses: DUMMY_EXPENSES,
     getExpenses: () =>
       get().expenses.sort((a, b) => a.date.getTime() - b.date.getTime()),
     addExpense: (expense) =>
