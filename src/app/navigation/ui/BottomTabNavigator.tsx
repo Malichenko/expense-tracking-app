@@ -2,6 +2,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { tabs } from "../lib/tabs";
 import theme from "@shared/config/theme";
+import { AddExpenseButton } from "@features/add-expense";
 
 const Tab = createBottomTabNavigator();
 
@@ -19,6 +20,7 @@ export const BottomTabNavigator = () => {
           elevation: 0,
         },
         tabBarActiveTintColor: theme.palette.accent[50],
+        headerRight: () => <AddExpenseButton />,
       }}
     >
       {tabs.map((tab) => (
