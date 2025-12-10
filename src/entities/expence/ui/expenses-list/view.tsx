@@ -3,12 +3,22 @@ import { FlatList, StyleSheet, Text } from "react-native";
 import { ExpenseItem } from "./components";
 import theme from "@shared/config/theme";
 
-export const ExpensesList = ({ expenses }: { expenses: Expense[] }) => {
+interface ExpensesListProps {
+  expenses: Expense[];
+  onExpensePress: (id: string) => void;
+}
+
+export const ExpensesList = ({
+  expenses,
+  onExpensePress,
+}: ExpensesListProps) => {
   return (
     <FlatList
       style={styles.container}
       data={expenses}
-      renderItem={({ item }) => <ExpenseItem item={item} />}
+      renderItem={({ item }) => (
+        <ExpenseItem item={item} onPress={() => onExpensePress(item.id)} />
+      )}
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}

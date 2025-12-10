@@ -83,18 +83,20 @@ interface ExpensesOutputProps {
   // TODO: make expenses mandatory
   expenses?: Expense[];
   periodName: string;
+  onExpensePress: (id: string) => void;
 }
 
 export const ExpensesOutput: FC<ExpensesOutputProps> = ({
   // TODO: remove default value
   expenses = DUMMY_EXPENSES,
   periodName,
+  onExpensePress,
 }: ExpensesOutputProps) => {
   return (
     <View style={styles.container}>
       <ExpenceSummary periodName={periodName} expenses={expenses} />
 
-      <ExpensesList expenses={expenses} />
+      <ExpensesList expenses={expenses} onExpensePress={onExpensePress} />
     </View>
   );
 };

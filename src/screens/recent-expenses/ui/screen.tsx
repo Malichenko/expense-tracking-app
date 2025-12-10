@@ -1,10 +1,20 @@
 import { ScreenLayout } from "@shared/ui";
 import { ExpensesOutput } from "@widgets/expenses-output";
+import { AppRoutes, useAppNavigation } from "@shared/routes";
 
 export const RecentExpensesScreen = () => {
+  const navigation = useAppNavigation();
+
+  const expensePressHandler = (expenseId: string) => {
+    navigation.navigate(AppRoutes.ManageExpense, { expenseId });
+  };
+
   return (
     <ScreenLayout>
-      <ExpensesOutput periodName="Last 7 Days" />
+      <ExpensesOutput
+        periodName="Last 7 Days"
+        onExpensePress={expensePressHandler}
+      />
     </ScreenLayout>
   );
 };
