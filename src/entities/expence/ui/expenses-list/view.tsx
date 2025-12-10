@@ -8,7 +8,7 @@ export const ExpensesList = ({ expenses }: { expenses: Expense[] }) => {
     <FlatList
       style={styles.container}
       data={expenses}
-      renderItem={ExpenseItem}
+      renderItem={({ item }) => <ExpenseItem item={item} />}
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}

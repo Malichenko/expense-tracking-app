@@ -1,13 +1,19 @@
+import { AppRoutes, useAppNavigation } from "@shared/routes";
 import { IconButton } from "@shared/ui";
-import theme from "@shared/config/theme";
 
-export const AddExpenseButton = () => {
+export const AddExpenseButton = ({ color }: { color?: string }) => {
+  const navigation = useAppNavigation();
+
+  const expensePressHandler = () => {
+    navigation.navigate(AppRoutes.ManageExpense);
+  };
+
   return (
     <IconButton
       icon="add"
-      onPress={() => console.log("Pressed")}
+      onPress={expensePressHandler}
       size="large"
-      color={theme.palette.accent[50]}
+      color={color}
       accessibilityLabel="Add new item"
     />
   );

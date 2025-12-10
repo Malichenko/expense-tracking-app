@@ -20,7 +20,7 @@ export const BottomTabNavigator = () => {
           elevation: 0,
         },
         tabBarActiveTintColor: theme.palette.accent[50],
-        headerRight: () => <AddExpenseButton />,
+        headerRight: ({ tintColor }) => <AddExpenseButton color={tintColor} />,
       }}
     >
       {tabs.map((tab) => (

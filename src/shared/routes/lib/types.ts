@@ -4,5 +4,5 @@ export type RootStackParamList = {
   [AppRoutes.MainTabs]: undefined;
   [AppRoutes.RecentExpenses]: undefined;
   [AppRoutes.AllExpenses]: undefined;
-  [AppRoutes.ManageExpense]: undefined;
+  [AppRoutes.ManageExpense]: { expenseId: string } | undefined;
 };

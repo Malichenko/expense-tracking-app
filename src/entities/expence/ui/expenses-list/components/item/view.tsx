@@ -4,13 +4,23 @@ import { numberToCurrencyFormatter } from "@shared/utils/currency";
 import { dateFormatter } from "@shared/utils/date";
 import theme from "@shared/config/theme";
 import { Card } from "@shared/ui";
+import { AppRoutes, useAppNavigation } from "@shared/routes";
 
 export const ExpenseItem: ExpenseItemContract = ({ item }) => {
+  const navigation = useAppNavigation();
+
+  const expensePressHandler = () => {
+    navigation.navigate(AppRoutes.ManageExpense, { expenseId: item.id });
+  };
+
   const formattedAmount = numberToCurrencyFormatter()(item.amount);
   const formattedDate = dateFormatter()(item.date);
 
   return (
-    <Pressable>
+    <Pressable
+      onPress={expensePressHandler}
+      style={({ pressed }) => pressed && styles.pressed}
+    >
       <Card style={styles.card}>
         <View style={styles.descriptionBox}>
           <Text style={[styles.textBase, styles.description]}>
@@ -58,5 +68,8 @@ const styles = StyleSheet.create({
   amount: {
     fontSize: theme.fontSize.base,
     fontWeight: "bold",
+  },
+  pressed: {
+    opacity: 0.75,
   },
 });

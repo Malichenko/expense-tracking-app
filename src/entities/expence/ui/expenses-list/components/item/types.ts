@@ -3,7 +3,7 @@ import { Expense } from "../../../../model/types";
 import { ReactElement } from "react";
 
 interface ExpenseItemProps {
-  item: Pick<Expense, "date" | "description" | "amount">;
+  item: Expense;
 }
 
 export type ExpenseItemContract = (
