@@ -1,14 +1,11 @@
 import React from "react";
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationOptions,
-} from "@react-navigation/native-stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { stacks } from "../lib/stacks";
 import theme from "@shared/config/theme";
-import { AppRoutes } from "@shared/routes";
+import { RootStackParamList } from "@shared/routes";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootStackNavigator = () => {
   return (
