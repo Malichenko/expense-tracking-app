@@ -1,1 +1,1 @@
-export { AllExpensesScreen } from "./ui/screen";
+export { AllExpensesScreen } from "./ui";

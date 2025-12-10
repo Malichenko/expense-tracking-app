@@ -1,11 +1,12 @@
-import { Text, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 
 import { ScreenLayout } from "@shared/ui";
+import { ExpensesOutput } from "@widgets/expenses-output";
 
-export const HomeScreen = () => {
+export const RecentExpensesScreen = () => {
   return (
     <ScreenLayout style={styles.container}>
-      <Text style={styles.text}>Recent Expenses Screen</Text>
+      <ExpensesOutput periodName="Last 7 Days" />
     </ScreenLayout>
   );
 };

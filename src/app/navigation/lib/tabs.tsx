@@ -1,6 +1,6 @@
 import { BottomTabNavigationOptions } from "@react-navigation/bottom-tabs";
 import { AppRoutes } from "@shared/routes/lib/dictionary";
-import { HomeScreen } from "@screens/home";
+import { RecentExpensesScreen } from "@screens/recent-expenses";
 import { AllExpensesScreen } from "@screens/all-expenses";
 import { FC } from "react";
 import { IconTodayView, IconCalendarView } from "@shared/routes";
@@ -14,7 +14,7 @@ type TabConfig<P = object> = {
 export const tabs: TabConfig[] = [
   {
     name: AppRoutes.RecentExpenses,
-    component: HomeScreen,
+    component: RecentExpensesScreen,
     options: {
       title: "Recent Expenses",
       tabBarLabel: "Recent",

@@ -1,11 +1,12 @@
-import { Text, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 
 import { ScreenLayout } from "@shared/ui";
+import { ExpensesOutput } from "@widgets/expenses-output";
 
 export const AllExpensesScreen = () => {
   return (
     <ScreenLayout style={styles.container}>
-      <Text style={styles.text}>All Expenses Screen</Text>
+      <ExpensesOutput periodName="Total" />
     </ScreenLayout>
   );
 };

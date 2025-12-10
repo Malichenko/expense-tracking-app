@@ -6,6 +6,7 @@ export const ExpensesList = ({ expenses }: { expenses: Expense[] }) => {
     <FlatList
       data={expenses}
       renderItem={({ item }) => <Text>{item.description}</Text>}
+      keyExtractor={(item) => item.id}
     />
   );
 };
