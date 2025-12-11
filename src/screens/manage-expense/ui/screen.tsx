@@ -8,46 +8,12 @@ import {
 } from "@entities/expence";
 import { IconButton } from "@shared/ui/icon-button";
 import theme from "@shared/config/theme";
-import { StyleSheet, View, TextInput, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppRoutes, RootStackParamList } from "@shared/routes";
 import { Button } from "@shared/ui";
-import { Expense } from "@entities/expence";
+import { ExpenseForm } from "@entities/expence";
 import { conditional, pipe } from "remeda";
-
-const ExpenseForm = ({ expense }: { expense?: Partial<Expense> }) => {
-  return (
-    <View>
-      <View>
-        <Text>Description</Text>
-        <TextInput
-          value={expense?.description}
-          onChangeText={() => {}}
-          placeholder="Enter description"
-        />
-      </View>
-
-      <View>
-        <Text>Amount</Text>
-        <TextInput
-          value={expense?.amount?.toString()}
-          onChangeText={() => {}}
-          placeholder="0.00"
-          keyboardType="decimal-pad"
-        />
-      </View>
-
-      <View>
-        <Text>Date</Text>
-        <TextInput
-          value={expense?.date?.toISOString()}
-          onChangeText={() => {}}
-          placeholder="YYYY-MM-DD"
-        />
-      </View>
-    </View>
-  );
-};
 
 export const ManageExpenseScreen = ({
   navigation,
@@ -83,7 +49,6 @@ export const ManageExpenseScreen = ({
           (expense) => !expense,
           () => {
             const random = Math.floor(Math.random() * 10000);
-
             expenseAdd({
               id: random.toString(),
               amount: random,
@@ -102,6 +67,7 @@ export const ManageExpenseScreen = ({
   return (
     <ScreenLayout style={styles.container}>
       <ExpenseForm expense={expense} />
+
       <View style={styles.buttonsContainer}>
         <View style={styles.buttonBox}>
           <Button variant="flat" onPress={expenseCancelHandler}>
