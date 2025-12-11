@@ -1,151 +1,101 @@
 import { useCallback } from "react";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import type { ExpenseStore } from "./types";
 import { useShallow } from "zustand/shallow";
+
+import type { Expense, ExpenseStore } from "./types";
 import { pipe } from "remeda";
 
-const now = Date.now();
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
-const dateMinusDays = (days: number) =>
-  new Date(now - days * 24 * 60 * 60 * 1000);
+const createDateMinusDays = (days: number): Date => {
+  const now = Date.now();
+  return new Date(now - days * MILLISECONDS_PER_DAY);
+};
 
-const DUMMY_EXPENSES = [
-  {
-    id: "e1",
-    amount: 100.71,
-    date: dateMinusDays(1),
-    description: "A pair of shoes",
-  },
-  {
-    id: "e2",
-    amount: 200.0,
-    date: dateMinusDays(2),
-    description: "A new phone",
-  },
-  {
-    id: "e3",
-    amount: 300.04,
-    date: dateMinusDays(3),
-    description: "A new laptop",
-  },
-  {
-    id: "e4",
-    amount: 400.06,
-    date: dateMinusDays(4),
-    description: "A new car",
-  },
-  {
-    id: "e5",
-    amount: 500.08,
-    date: dateMinusDays(5),
-    description: "A new house",
-  },
-  {
-    id: "e6",
-    amount: 600.1,
-    date: dateMinusDays(6),
-    description: "A new boat",
-  },
-  {
-    id: "e7",
-    amount: 700.12,
-    date: dateMinusDays(7),
-    description: "A new plane",
-  },
-  {
-    id: "e8",
-    amount: 800.14,
-    date: dateMinusDays(8),
-    description: "A new train",
-  },
-  {
-    id: "e9",
-    amount: 900.16,
-    date: dateMinusDays(9),
-    description: "A new ship",
-  },
-  {
-    id: "e10",
-    amount: 1000.18,
-    date: dateMinusDays(10),
-    description: "A new rocket",
-  },
-  {
-    id: "e11",
-    amount: 1100.2,
-    date: dateMinusDays(11),
-    description: "A new spaceship",
-  },
-  {
-    id: "e12",
-    amount: 1200.22,
-    date: dateMinusDays(12),
-    description: "A new spaceship",
-  },
-];
+const sortExpensesByDateDescending = (expenses: Expense[]): Expense[] => {
+  return [...expenses].sort((a, b) => b.date.getTime() - a.date.getTime());
+};
 
 const useExpenseStore = create<ExpenseStore>()(
-  immer((set, get) => ({
-    expenses: DUMMY_EXPENSES,
-    getExpenses: () =>
-      get().expenses.sort((a, b) => a.date.getTime() - b.date.getTime()),
-    addExpense: (expense) =>
+  immer((set) => ({
+    expenses: [],
+    addExpense: (expense) => {
       set((state) => {
         state.expenses.push(expense);
-      }),
-    removeExpense: (id) =>
+      });
+    },
+    removeExpense: (id) => {
       set((state) => {
         state.expenses = state.expenses.filter((expense) => expense.id !== id);
-      }),
-    updateExpense: (expense) =>
+      });
+    },
+    updateExpense: (expense) => {
       set((state) => {
         const index = state.expenses.findIndex((e) => e.id === expense.id);
         if (index !== -1) {
-          state.expenses.splice(index, 1, expense);
+          state.expenses[index] = expense;
         }
-      }),
+      });
+    },
   }))
 );
 
-export const useExpenseById = (id?: string) =>
-  useExpenseStore(
-    useCallback(
-      (state) => state.expenses.find((expense) => expense.id === id),
-      [id]
-    )
+const selectExpenseById = (id: string | undefined) => (state: ExpenseStore) =>
+  id ? state.expenses.find((expense) => expense.id === id) : undefined;
+
+const selectAllExpenses = (state: ExpenseStore): Expense[] =>
+  sortExpensesByDateDescending(state.expenses);
+
+const selectRecentExpenses =
+  (days: number) =>
+  (state: ExpenseStore): Expense[] => {
+    const cutoffDate = createDateMinusDays(days);
+    const recentExpenses = state.expenses.filter(
+      (expense) => expense.date >= cutoffDate
+    );
+    return sortExpensesByDateDescending(recentExpenses);
+  };
+
+const selectRemoveExpense = (state: ExpenseStore) => state.removeExpense;
+const selectAddExpense = (state: ExpenseStore) => state.addExpense;
+const selectUpdateExpense = (state: ExpenseStore) => state.updateExpense;
+
+export const useExpenseById = (id?: string) => {
+  return pipe(
+    selectExpenseById(id),
+    (selector) => useShallow(selector),
+    (selector) => useCallback(selector, [id]),
+    (selector) => useExpenseStore(selector)
   );
+};
 
-export const useExpenseDelete = () =>
-  useExpenseStore(useCallback((state) => state.removeExpense, []));
-
-export const useExpenseAdd = () =>
-  useExpenseStore(useCallback((state) => state.addExpense, []));
-
-export const useExpenseUpdate = () =>
-  useExpenseStore(useCallback((state) => state.updateExpense, []));
-
-export const useExpenses = () =>
-  useExpenseStore(
-    useCallback(
-      useShallow((state) =>
-        [...state.expenses].sort((a, b) => b.date.getTime() - a.date.getTime())
-      ),
-      []
-    )
+export const useExpenses = () => {
+  return pipe(
+    selectAllExpenses,
+    (selector) => useShallow(selector),
+    (selector) => useCallback(selector, []),
+    (selector) => useExpenseStore(selector)
   );
+};
 
-const recentExpensesSelector =
-  (days = 7) =>
-  (state: ExpenseStore) =>
-    state.expenses
-      .filter(({ date }) => date >= dateMinusDays(days))
-      .sort((a, b) => b.date.getTime() - a.date.getTime());
-
-export const useRecentExpenses = (days = 7) =>
-  pipe(
-    recentExpensesSelector(days),
+export const useRecentExpenses = (days = 7) => {
+  return pipe(
+    selectRecentExpenses(days),
     (selector) => useShallow(selector),
     (selector) => useCallback(selector, [days]),
     (selector) => useExpenseStore(selector)
   );
+};
+
+export const useExpenseAdd = () => {
+  return useExpenseStore(selectAddExpense);
+};
+
+export const useExpenseUpdate = () => {
+  return useExpenseStore(selectUpdateExpense);
+};
+
+export const useExpenseDelete = () => {
+  return useExpenseStore(selectRemoveExpense);
+};
