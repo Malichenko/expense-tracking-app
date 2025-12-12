@@ -1,19 +1,17 @@
-import { ScreenLayout } from "@shared/ui/screen-layout";
+import { StyleSheet, View } from "react-native";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
+import { ScreenLayout, IconButton, Button } from "@shared/ui";
+import theme from "@shared/config/theme";
+import { AppRoutes, type RootStackParamList } from "@shared/routes";
 import {
+  ExpenseForm,
   useExpenseAdd,
   useExpenseById,
   useExpenseDelete,
   useExpenseUpdate,
+  type ExpenseFormState,
 } from "@entities/expence";
-import { IconButton } from "@shared/ui/icon-button";
-import theme from "@shared/config/theme";
-import { StyleSheet, View } from "react-native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppRoutes, RootStackParamList } from "@shared/routes";
-import { Button } from "@shared/ui";
-import { ExpenseForm } from "@entities/expence";
-import { conditional, pipe } from "remeda";
 
 export const ManageExpenseScreen = ({
   navigation,
@@ -21,44 +19,40 @@ export const ManageExpenseScreen = ({
 }: NativeStackScreenProps<RootStackParamList, AppRoutes.ManageExpense>) => {
   const expenseId = route.params?.expenseId;
   const isEditing = !!expenseId;
+
+  const expense = useExpenseById(expenseId);
   const expenseDelete = useExpenseDelete();
   const expenseAdd = useExpenseAdd();
   const expenseUpdate = useExpenseUpdate();
-
-  const expense = useExpenseById(expenseId);
 
   const goBack = () => {
     navigation.goBack();
   };
 
-  const expenseDeleteHandler = (id: string) => {
+  const handleDelete = (id: string) => {
     expenseDelete(id);
     goBack();
   };
 
-  const expenseCancelHandler = () => {
+  const handleCancel = () => {
     goBack();
   };
 
-  const confirmHandler = () => {
-    pipe(
-      expense,
-      conditional(
-        [(expense) => !!expense, (expense) => expenseUpdate(expense)],
-        [
-          (expense) => !expense,
-          () => {
-            const random = Math.floor(Math.random() * 10000);
-            expenseAdd({
-              id: random.toString(),
-              amount: random,
-              date: new Date(),
-              description: "Test " + random,
-            });
-          },
-        ]
-      )
-    );
+  const handleConfirm = ({ data, isValid }: ExpenseFormState) => {
+    if (!isValid || !data.date) return;
+
+    const expenseData = {
+      amount: Number.parseFloat(data.amount),
+      description: data.description,
+      date: data.date,
+    };
+
+    if (isEditing && expenseId) {
+      expenseUpdate({ id: expenseId, ...expenseData });
+    } else {
+      expenseAdd({ id: Date.now().toString(), ...expenseData });
+    }
+
     goBack();
   };
 
@@ -66,25 +60,32 @@ export const ManageExpenseScreen = ({
 
   return (
     <ScreenLayout style={styles.container}>
-      <ExpenseForm expense={expense} />
+      <ExpenseForm expense={expense}>
+        {(formState) => (
+          <View style={styles.buttonsContainer}>
+            <View style={styles.buttonBox}>
+              <Button variant="flat" onPress={handleCancel}>
+                Cancel
+              </Button>
+            </View>
 
-      <View style={styles.buttonsContainer}>
-        <View style={styles.buttonBox}>
-          <Button variant="flat" onPress={expenseCancelHandler}>
-            Cancel
-          </Button>
-        </View>
-
-        <View style={styles.buttonBox}>
-          <Button onPress={confirmHandler}>{confirmButtonText}</Button>
-        </View>
-      </View>
+            <View style={styles.buttonBox}>
+              <Button
+                onPress={() => handleConfirm(formState)}
+                disabled={!formState.isValid}
+              >
+                {confirmButtonText}
+              </Button>
+            </View>
+          </View>
+        )}
+      </ExpenseForm>
 
       {isEditing && (
         <View style={styles.deleteContainer}>
           <IconButton
             icon="trash"
-            onPress={() => expenseDeleteHandler(expenseId)}
+            onPress={() => handleDelete(expenseId)}
             color={theme.palette.error[50]}
             size="large"
           />
@@ -109,6 +110,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     gap: theme.spacing.x2,
+    marginTop: theme.spacing.x4,
   },
   buttonBox: {
     flex: 1,

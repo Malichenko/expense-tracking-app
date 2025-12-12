@@ -56,4 +56,7 @@ export const styles = StyleSheet.create({
   textFlat: {
     color: theme.palette.primary[10],
   },
+  disabled: {
+    opacity: 0.5,
+  },
 });

@@ -60,7 +60,7 @@ export const styles = StyleSheet.create({
     gap: theme.spacing.x1,
   },
   label: {
-    color: theme.palette.neutral[50],
+    color: theme.palette.neutral[10],
     fontSize: theme.fontSize.base,
     fontWeight: "600",
   },
