@@ -1,12 +1,24 @@
-import { useState, useCallback, useMemo } from "react";
-import { View, StyleSheet } from "react-native";
+import { useState, useCallback, useMemo, FC, PropsWithChildren } from "react";
+import {
+  View,
+  StyleSheet,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
 
 import type { Expense } from "@entities/expence";
 import { AmountInput, DescriptionInput, DateInput } from "@shared/ui";
 import theme from "@shared/config/theme";
 
 import type { ExpenseFormContract, ExpenseFormValues } from "./types";
-
+const DismissKeyboard: FC<PropsWithChildren> = ({ children }) => (
+  <TouchableWithoutFeedback
+    onPress={() => Keyboard.dismiss()}
+    accessible={false}
+  >
+    {children}
+  </TouchableWithoutFeedback>
+);
 const getInitialFormData =
   (expense?: Partial<Expense>) => (): ExpenseFormValues => ({
     amount: expense?.amount?.toString() ?? "",
@@ -39,45 +51,50 @@ export const ExpenseForm: ExpenseFormContract = ({ expense, children }) => {
   }, []);
 
   return (
-    <>
+    <DismissKeyboard>
       <View style={styles.container}>
-        <AmountInput
-          label="Amount"
-          value={formData.amount}
-          onChangeText={updateAmount}
-          placeholder="0.00"
-          required
-          onValidationChange={updateFieldValidity}
-        />
+        <View style={styles.contentContainer}>
+          <AmountInput
+            label="Amount"
+            value={formData.amount}
+            onChangeText={updateAmount}
+            placeholder="0.00"
+            required
+            onValidationChange={updateFieldValidity}
+          />
 
-        <DescriptionInput
-          label="Description"
-          value={formData.description}
-          onChangeText={updateDescription}
-          placeholder="Enter description"
-          maxLength={200}
-          required
-          onValidationChange={updateFieldValidity}
-        />
+          <DescriptionInput
+            label="Description"
+            value={formData.description}
+            onChangeText={updateDescription}
+            placeholder="Enter description"
+            maxLength={200}
+            required
+            onValidationChange={updateFieldValidity}
+          />
 
-        <DateInput
-          label="Date"
-          value={formData.date}
-          onChange={updateDate}
-          placeholder="Select date"
-          maxDate={new Date()}
-          required
-          onValidationChange={updateFieldValidity}
-        />
+          <DateInput
+            label="Date"
+            value={formData.date}
+            onChange={updateDate}
+            placeholder="Select date"
+            maxDate={new Date()}
+            required
+            onValidationChange={updateFieldValidity}
+          />
+        </View>
+
+        {children({ data: formData, isValid })}
       </View>
-
-      {children({ data: formData, isValid })}
-    </>
+    </DismissKeyboard>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  contentContainer: {
     gap: theme.spacing.x4,
   },
 });

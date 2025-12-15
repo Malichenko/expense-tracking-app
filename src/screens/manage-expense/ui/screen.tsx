@@ -5,6 +5,7 @@ import { ScreenLayout, IconButton, Button } from "@shared/ui";
 import theme from "@shared/config/theme";
 import { AppRoutes, type RootStackParamList } from "@shared/routes";
 import {
+  Expense,
   ExpenseForm,
   useExpenseAdd,
   useExpenseById,
@@ -41,7 +42,7 @@ export const ManageExpenseScreen = ({
   const handleConfirm = ({ data, isValid }: ExpenseFormState) => {
     if (!isValid || !data.date) return;
 
-    const expenseData = {
+    const expenseData: Omit<Expense, "id"> = {
       amount: Number.parseFloat(data.amount),
       description: data.description,
       date: data.date,
@@ -59,7 +60,7 @@ export const ManageExpenseScreen = ({
   const confirmButtonText = isEditing ? "Update" : "Add";
 
   return (
-    <ScreenLayout style={styles.container}>
+    <ScreenLayout>
       <ExpenseForm expense={expense}>
         {(formState) => (
           <View style={styles.buttonsContainer}>
@@ -96,16 +97,6 @@ export const ManageExpenseScreen = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: theme.spacing.x3,
-  },
-  deleteContainer: {
-    marginTop: theme.spacing.x4,
-    alignItems: "center",
-    borderTopWidth: 2,
-    borderTopColor: theme.palette.accent[50],
-    paddingTop: theme.spacing.x2,
-  },
   buttonsContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -114,5 +105,13 @@ const styles = StyleSheet.create({
   },
   buttonBox: {
     flex: 1,
+  },
+
+  deleteContainer: {
+    marginTop: theme.spacing.x4,
+    alignItems: "center",
+    borderTopWidth: 2,
+    borderTopColor: theme.palette.accent[50],
+    paddingTop: theme.spacing.x2,
   },
 });

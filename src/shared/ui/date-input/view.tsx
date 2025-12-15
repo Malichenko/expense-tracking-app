@@ -1,5 +1,12 @@
 import { useState, useCallback, useMemo } from "react";
-import { Text, View, StyleSheet, Pressable, Platform } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  Platform,
+  Keyboard,
+} from "react-native";
 import DateTimePicker, {
   type DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
@@ -58,6 +65,7 @@ export const DateInput: DateInputContract = ({
   );
 
   const handlePress = useCallback(() => {
+    Keyboard.dismiss();
     if (disabled) return;
     setShowPicker(true);
   }, [disabled]);
