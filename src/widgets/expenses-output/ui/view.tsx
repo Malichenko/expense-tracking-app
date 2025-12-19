@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
-import type { Expense } from "@entities/expence";
-import { ExpenceSummary, ExpensesList } from "@entities/expence";
+import type { Expense } from "@entities/expense";
+import { ExpenseSummary, ExpensesList } from "@entities/expense";
 import { type FC } from "react";
 import theme from "@shared/config/theme";
 
@@ -20,7 +20,7 @@ export const ExpensesOutput: FC<ExpensesOutputProps> = ({
   return (
     <View style={styles.container}>
       {!isNoExpenses && (
-        <ExpenceSummary periodName={periodName} expenses={expenses} />
+        <ExpenseSummary periodName={periodName} expenses={expenses} />
       )}
 
       <ExpensesList expenses={expenses} onExpensePress={onExpensePress} />

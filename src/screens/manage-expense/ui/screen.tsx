@@ -1,18 +1,12 @@
 import { StyleSheet, View } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import { ScreenLayout, IconButton, Button } from "@shared/ui";
+import { ScreenLayout } from "@shared/ui";
 import theme from "@shared/config/theme";
 import { AppRoutes, type RootStackParamList } from "@shared/routes";
-import {
-  Expense,
-  ExpenseForm,
-  useExpenseAdd,
-  useExpenseById,
-  useExpenseDelete,
-  useExpenseUpdate,
-  type ExpenseFormState,
-} from "@entities/expence";
+import { ExpenseForm, useExpenseById } from "@entities/expense";
+import { DeleteExpenseButton } from "@features/delete-expense";
+import { ManageExpenseActions } from "@features/manage-expense";
 
 export const ManageExpenseScreen = ({
   navigation,
@@ -22,74 +16,28 @@ export const ManageExpenseScreen = ({
   const isEditing = !!expenseId;
 
   const expense = useExpenseById(expenseId);
-  const expenseDelete = useExpenseDelete();
-  const expenseAdd = useExpenseAdd();
-  const expenseUpdate = useExpenseUpdate();
 
   const goBack = () => {
     navigation.goBack();
   };
 
-  const handleDelete = (id: string) => {
-    expenseDelete(id);
-    goBack();
-  };
-
-  const handleCancel = () => {
-    goBack();
-  };
-
-  const handleConfirm = ({ data, isValid }: ExpenseFormState) => {
-    if (!isValid || !data.date) return;
-
-    const expenseData: Omit<Expense, "id"> = {
-      amount: Number.parseFloat(data.amount),
-      description: data.description,
-      date: data.date,
-    };
-
-    if (isEditing && expenseId) {
-      expenseUpdate({ id: expenseId, ...expenseData });
-    } else {
-      expenseAdd({ id: Date.now().toString(), ...expenseData });
-    }
-
-    goBack();
-  };
-
-  const confirmButtonText = isEditing ? "Update" : "Add";
-
   return (
     <ScreenLayout>
       <ExpenseForm expense={expense}>
         {(formState) => (
-          <View style={styles.buttonsContainer}>
-            <View style={styles.buttonBox}>
-              <Button variant="flat" onPress={handleCancel}>
-                Cancel
-              </Button>
-            </View>
-
-            <View style={styles.buttonBox}>
-              <Button
-                onPress={() => handleConfirm(formState)}
-                disabled={!formState.isValid}
-              >
-                {confirmButtonText}
-              </Button>
-            </View>
-          </View>
+          <ManageExpenseActions
+            isEditing={isEditing}
+            expenseId={expenseId}
+            formState={formState}
+            onCancel={goBack}
+            onSuccess={goBack}
+          />
         )}
       </ExpenseForm>
 
-      {isEditing && (
+      {isEditing && expenseId && (
         <View style={styles.deleteContainer}>
-          <IconButton
-            icon="trash"
-            onPress={() => handleDelete(expenseId)}
-            color={theme.palette.error[50]}
-            size="large"
-          />
+          <DeleteExpenseButton id={expenseId} onDelete={goBack} />
         </View>
       )}
     </ScreenLayout>
@@ -97,16 +45,6 @@ export const ManageExpenseScreen = ({
 };
 
 const styles = StyleSheet.create({
-  buttonsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    gap: theme.spacing.x2,
-    marginTop: theme.spacing.x4,
-  },
-  buttonBox: {
-    flex: 1,
-  },
-
   deleteContainer: {
     marginTop: theme.spacing.x4,
     alignItems: "center",

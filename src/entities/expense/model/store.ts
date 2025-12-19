@@ -5,17 +5,8 @@ import { useShallow } from "zustand/shallow";
 
 import type { Expense, ExpenseStore } from "./types";
 import { pipe } from "remeda";
-
-const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
-
-const createDateMinusDays = (days: number): Date => {
-  const now = Date.now();
-  return new Date(now - days * MILLISECONDS_PER_DAY);
-};
-
-const sortExpensesByDateDescending = (expenses: Expense[]): Expense[] => {
-  return [...expenses].sort((a, b) => b.date.getTime() - a.date.getTime());
-};
+import { createDateMinusDays } from "../lib/utils/createDateMinusDays";
+import { sortExpensesByDateDescending } from "../lib/utils/sortExpensesByDateDescending";
 
 const useExpenseStore = create<ExpenseStore>()(
   immer((set) => ({
@@ -43,10 +34,8 @@ const useExpenseStore = create<ExpenseStore>()(
 
 const selectExpenseById = (id: string | undefined) => (state: ExpenseStore) =>
   id ? state.expenses.find((expense) => expense.id === id) : undefined;
-
 const selectAllExpenses = (state: ExpenseStore): Expense[] =>
   sortExpensesByDateDescending(state.expenses);
-
 const selectRecentExpenses =
   (days: number) =>
   (state: ExpenseStore): Expense[] => {
@@ -56,7 +45,6 @@ const selectRecentExpenses =
     );
     return sortExpensesByDateDescending(recentExpenses);
   };
-
 const selectRemoveExpense = (state: ExpenseStore) => state.removeExpense;
 const selectAddExpense = (state: ExpenseStore) => state.addExpense;
 const selectUpdateExpense = (state: ExpenseStore) => state.updateExpense;

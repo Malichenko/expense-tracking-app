@@ -1,5 +1,5 @@
 import type { FC, ReactNode } from "react";
-import type { Expense } from "@entities/expence";
+import type { Expense } from "@entities/expense";
 
 export interface ExpenseFormValues {
   amount: string;

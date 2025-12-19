@@ -1,9 +1,9 @@
 import { Expense } from "../../model/types";
 import { FC } from "react";
 
-interface ExpenceSummaryProps {
+interface ExpenseSummaryProps {
   periodName: string;
   expenses: Expense[];
 }
 
-export type ExpenceSummaryContract = FC<ExpenceSummaryProps>;
+export type ExpenseSummaryContract = FC<ExpenseSummaryProps>;

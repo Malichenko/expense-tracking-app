@@ -1,7 +1,7 @@
 import { ScreenLayout } from "@shared/ui";
 import { ExpensesOutput } from "@widgets/expenses-output";
 import { AppRoutes, useAppNavigation } from "@shared/routes";
-import { useRecentExpenses } from "@entities/expence";
+import { useRecentExpenses } from "@entities/expense";
 
 export const RecentExpensesScreen = () => {
   const navigation = useAppNavigation();

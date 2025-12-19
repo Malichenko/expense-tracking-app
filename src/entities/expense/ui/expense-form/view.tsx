@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 
-import type { Expense } from "@entities/expence";
+import type { Expense } from "@entities/expense";
 import { AmountInput, DescriptionInput, DateInput } from "@shared/ui";
 import theme from "@shared/config/theme";
 

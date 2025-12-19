@@ -1,11 +1,11 @@
 import { numberToCurrencyFormatter } from "@shared/utils/currency";
 import { Text, StyleSheet } from "react-native";
 import { sumBy, pipe } from "remeda";
-import { ExpenceSummaryContract } from "./types";
+import { ExpenseSummaryContract } from "./types";
 import { Card } from "@shared/ui";
 import theme from "@shared/config/theme";
 
-export const ExpenceSummary: ExpenceSummaryContract = ({
+export const ExpenseSummary: ExpenseSummaryContract = ({
   periodName,
   expenses,
 }) => {
