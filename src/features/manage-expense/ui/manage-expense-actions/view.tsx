@@ -4,25 +4,17 @@ import theme from "@shared/config/theme";
 import {
   useExpenseAdd,
   useExpenseUpdate,
-  type ExpenseFormState,
   type Expense,
 } from "@entities/expense";
+import type { ManageExpenseActionsContract } from "./types";
 
-interface ManageExpenseActionsProps {
-  isEditing: boolean;
-  expenseId?: string;
-  formState: ExpenseFormState;
-  onCancel: () => void;
-  onSuccess: () => void;
-}
-
-export const ManageExpenseActions = ({
+export const ManageExpenseActions: ManageExpenseActionsContract = ({
   isEditing,
   expenseId,
   formState,
   onCancel,
   onSuccess,
-}: ManageExpenseActionsProps) => {
+}) => {
   const expenseAdd = useExpenseAdd();
   const expenseUpdate = useExpenseUpdate();
 

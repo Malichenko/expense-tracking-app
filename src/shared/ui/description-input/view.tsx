@@ -15,7 +15,7 @@ export const DescriptionInput: DescriptionInputContract = ({
   maxLength = DEFAULT_MAX_LENGTH,
   minLength,
   showCharacterCount = true,
-  numberOfLines = 3,
+  numberOfLines = 4,
   disabled = false,
   containerStyle,
   inputStyle,

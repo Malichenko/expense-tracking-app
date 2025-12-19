@@ -4,9 +4,9 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ScreenLayout } from "@shared/ui";
 import theme from "@shared/config/theme";
 import { AppRoutes, type RootStackParamList } from "@shared/routes";
-import { ExpenseForm, useExpenseById } from "@entities/expense";
+import { useExpenseById } from "@entities/expense";
 import { DeleteExpenseButton } from "@features/delete-expense";
-import { ManageExpenseActions } from "@features/manage-expense";
+import { ManageExpenseActions, ExpenseForm } from "@features/manage-expense";
 
 export const ManageExpenseScreen = ({
   navigation,

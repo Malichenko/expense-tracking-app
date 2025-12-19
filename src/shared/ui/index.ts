@@ -6,3 +6,4 @@ export { Input } from "./input";
 export { AmountInput } from "./amount-input";
 export { DescriptionInput } from "./description-input";
 export { DateInput } from "./date-input";
+export { DismissKeyboard } from "./dismiss-keyboard";
