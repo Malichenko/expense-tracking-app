@@ -8,14 +8,14 @@ export const isRequired = (required: boolean) => (value: DateValue) =>
 
 export const isMinDate = (minDate?: Date) => (value: DateValue) =>
   predicatePipe<DateWithLimit>(
-    ([v]) => v === null || v instanceof Date,
-    ([, min]) => min === undefined || min instanceof Date,
+    ([v]) => v === null,
+    ([, min]) => min === undefined,
     ([v, min]) => v === null || min === undefined || v >= min
   )([value, minDate]);
 
 export const isMaxDate = (maxDate?: Date) => (value: DateValue) =>
   predicatePipe<DateWithLimit>(
-    ([v]) => v === null || v instanceof Date,
-    ([, max]) => max === undefined || max instanceof Date,
+    ([v]) => v === null,
+    ([, max]) => max === undefined,
     ([v, max]) => v === null || max === undefined || v <= max
   )([value, maxDate]);

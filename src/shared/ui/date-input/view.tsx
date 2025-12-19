@@ -15,7 +15,8 @@ import { Ionicons } from "@expo/vector-icons";
 import theme from "@shared/config/theme";
 
 import type { DateInputContract } from "./types";
-import { formatDateForDisplay, createDateSchema } from "./lib";
+import { createDateSchema } from "./lib";
+import { dateFormatter } from "@shared/utils/date";
 
 export const DateInput: DateInputContract = ({
   value,
@@ -93,7 +94,7 @@ export const DateInput: DateInputContract = ({
   }, []);
 
   const displayError = externalError ?? internalError;
-  const displayValue = formatDateForDisplay(value, locale, displayFormat);
+  const displayValue = dateFormatter(locale, displayFormat)(value);
 
   const borderColor = displayError
     ? theme.palette.error[50]

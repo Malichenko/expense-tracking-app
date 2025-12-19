@@ -27,7 +27,6 @@ export const createDateSchema = (options: DateSchemaOptions = {}) => {
 
   return z
     .date()
-    .nullable()
     .refine(isRequired(required), {
       message: errorMessages.required,
     })

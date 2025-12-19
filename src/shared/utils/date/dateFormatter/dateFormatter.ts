@@ -7,5 +7,5 @@ export const dateFormatter =
       year: "numeric",
     }
   ) =>
-  (date: Date) =>
+  (date = new Date()) =>
     Intl.DateTimeFormat(locales, options).format(date);
