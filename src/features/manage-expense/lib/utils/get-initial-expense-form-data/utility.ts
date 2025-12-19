@@ -4,5 +4,5 @@ export const getInitialExpenseFormData: GetInitialExpenseFormDataContract =
   (expense) => () => ({
     amount: expense?.amount?.toString() ?? "",
     description: expense?.description ?? "",
-    date: expense?.date ?? null,
+    date: expense?.date ?? new Date(),
   });

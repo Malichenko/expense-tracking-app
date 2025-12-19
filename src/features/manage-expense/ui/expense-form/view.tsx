@@ -30,6 +30,16 @@ export const ExpenseForm: ExpenseFormContract = ({ expense, children }) => {
     <DismissKeyboard>
       <View style={styles.container}>
         <View style={styles.contentContainer}>
+          <DateInput
+            label="Date"
+            value={formData.date}
+            onChange={updateDate}
+            placeholder="Select date"
+            maxDate={new Date()}
+            required
+            onValidationChange={updateFieldValidity}
+          />
+
           <AmountInput
             label="Amount"
             value={formData.amount}
@@ -45,16 +55,6 @@ export const ExpenseForm: ExpenseFormContract = ({ expense, children }) => {
             onChangeText={updateDescription}
             placeholder="Enter description"
             maxLength={200}
-            required
-            onValidationChange={updateFieldValidity}
-          />
-
-          <DateInput
-            label="Date"
-            value={formData.date}
-            onChange={updateDate}
-            placeholder="Select date"
-            maxDate={new Date()}
             required
             onValidationChange={updateFieldValidity}
           />
