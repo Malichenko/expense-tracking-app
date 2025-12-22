@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import { Button } from "@shared/ui";
 import theme from "@shared/config/theme";
@@ -17,8 +18,15 @@ export const ManageExpenseActions: ManageExpenseActionsContract = ({
 }) => {
   const expenseAdd = useExpenseAdd();
   const expenseUpdate = useExpenseUpdate();
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-  const handleConfirm = () => {
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
+
+  const handleConfirm = async () => {
     const { data, isValid } = formState;
     if (!isValid || !data.date) return;
 
@@ -28,13 +36,22 @@ export const ManageExpenseActions: ManageExpenseActionsContract = ({
       date: data.date,
     };
 
-    if (isEditing && expenseId) {
-      expenseUpdate({ id: expenseId, ...expenseData });
-    } else {
-      expenseAdd({ id: Date.now().toString(), ...expenseData });
-    }
+    abortControllerRef.current = new AbortController();
 
-    onSuccess();
+    try {
+      if (isEditing && expenseId) {
+        await expenseUpdate(expenseId, expenseData, {
+          signal: abortControllerRef.current.signal,
+        });
+      } else {
+        await expenseAdd(expenseData, {
+          signal: abortControllerRef.current.signal,
+        });
+      }
+      onSuccess();
+    } catch {
+      // Error is handled in the store, but local handling can be added here if needed
+    }
   };
 
   const confirmButtonText = isEditing ? "Update" : "Add";

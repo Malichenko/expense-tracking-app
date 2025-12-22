@@ -1,5 +1,5 @@
 import { isEmpty } from "remeda";
-import { predicatePipe } from "@shared/utils/behaviour";
+import { predicatePipe } from "@shared/utils/fp";
 
 export const isRequired = (required: boolean) => (value: string) =>
   !required || !isEmpty(value);

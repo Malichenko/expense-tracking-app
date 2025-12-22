@@ -3,7 +3,7 @@ import type { StyleProp, ViewStyle, TextStyle } from "react-native";
 import type { ZodType } from "zod";
 
 interface DateInputProps {
-  value?: Date;
+  value?: Date | null;
   onChange: (date: Date | null) => void;
   label?: string;
   placeholder?: string;

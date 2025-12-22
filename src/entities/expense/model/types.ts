@@ -5,9 +5,35 @@ export type Expense = {
   description: string;
 };
 
-export interface ExpenseStore {
+export type ExpenseUpsertData = Omit<Expense, "id">;
+
+export interface ExpenseStoreState {
   expenses: Expense[];
-  addExpense: (expense: Expense) => void;
-  removeExpense: (id: string) => void;
-  updateExpense: (expense: Expense) => void;
+  isLoading: boolean;
+  error: string | null;
+}
+
+interface ExpenseStoreOptions {
+  signal?: AbortSignal;
+}
+
+export interface ExpenseStoreActions {
+  setExpenses: (expenses: Expense[]) => void;
+  fetchExpenses: (options?: ExpenseStoreOptions) => Promise<void>;
+  addExpense: (
+    expenseData: ExpenseUpsertData,
+    options?: ExpenseStoreOptions
+  ) => Promise<string>;
+  removeExpense: (id: string, options?: ExpenseStoreOptions) => Promise<void>;
+  updateExpense: (
+    id: string,
+    expenseData: ExpenseUpsertData,
+    options?: ExpenseStoreOptions
+  ) => Promise<void>;
+  setIsLoading: (isLoading: boolean) => void;
+  setError: (error: string | null) => void;
+}
+
+export interface ExpenseStore extends ExpenseStoreState {
+  actions: ExpenseStoreActions;
 }

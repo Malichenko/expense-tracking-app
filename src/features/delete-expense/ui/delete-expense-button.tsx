@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { IconButton } from "@shared/ui";
 import theme from "@shared/config/theme";
 import { useExpenseDelete } from "@entities/expense";
@@ -12,10 +13,22 @@ export const DeleteExpenseButton = ({
   onDelete,
 }: DeleteExpenseButtonProps) => {
   const expenseDelete = useExpenseDelete();
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-  const handleDelete = () => {
-    expenseDelete(id);
-    onDelete?.();
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
+
+  const handleDelete = async () => {
+    abortControllerRef.current = new AbortController();
+    try {
+      await expenseDelete(id, { signal: abortControllerRef.current.signal });
+      onDelete?.();
+    } catch {
+      // Error is handled in the store
+    }
   };
 
   return (

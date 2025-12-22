@@ -1,4 +1,4 @@
-import { predicatePipe } from "@shared/utils/behaviour";
+import { predicatePipe } from "@shared/utils/fp";
 
 type DateValue = Date | null;
 type DateWithLimit = readonly [DateValue, Date | undefined];
@@ -7,6 +7,7 @@ export const isRequired = (required: boolean) => (value: DateValue) =>
   !required || value !== null;
 
 export const isMinDate = (minDate?: Date) => (value: DateValue) =>
+  Boolean(minDate) &&
   predicatePipe<DateWithLimit>(
     ([v]) => v === null,
     ([, min]) => min === undefined,
@@ -14,6 +15,7 @@ export const isMinDate = (minDate?: Date) => (value: DateValue) =>
   )([value, minDate]);
 
 export const isMaxDate = (maxDate?: Date) => (value: DateValue) =>
+  Boolean(maxDate) &&
   predicatePipe<DateWithLimit>(
     ([v]) => v === null,
     ([, max]) => max === undefined,
