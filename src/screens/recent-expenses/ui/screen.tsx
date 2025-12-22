@@ -2,16 +2,18 @@ import { ScreenLayout, LoadingOverlay, ErrorOverlay } from "@shared/ui";
 import { ExpensesOutput } from "@widgets/expenses-output";
 import { AppRoutes, useAppNavigation } from "@shared/routes";
 import {
-  useExpenses,
   useExpenseLoading,
   useExpenseError,
+  useFetchExpenses,
+  useRecentExpenses,
 } from "@entities/expense";
 import { createDateMinusDays } from "@entities/expense/lib/utils/createDateMinusDays";
 import { useEffect, useMemo } from "react";
 
 export const RecentExpensesScreen = () => {
   const navigation = useAppNavigation();
-  const { fetchExpenses, expenses } = useExpenses();
+  const expenses = useRecentExpenses();
+  const fetchExpenses = useFetchExpenses();
   const isLoading = useExpenseLoading();
   const error = useExpenseError();
 

@@ -5,11 +5,13 @@ import {
   useExpenses,
   useExpenseLoading,
   useExpenseError,
+  useFetchExpenses,
 } from "@entities/expense";
 import { useEffect } from "react";
 
 export const AllExpensesScreen = () => {
-  const { expenses, fetchExpenses } = useExpenses();
+  const expenses = useExpenses();
+  const fetchExpenses = useFetchExpenses();
   const isLoading = useExpenseLoading();
   const error = useExpenseError();
   const navigation = useAppNavigation();

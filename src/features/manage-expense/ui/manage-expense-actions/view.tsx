@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import { Button } from "@shared/ui";
 import theme from "@shared/config/theme";
 import {
@@ -49,8 +49,13 @@ export const ManageExpenseActions: ManageExpenseActionsContract = ({
         });
       }
       onSuccess();
-    } catch {
-      // Error is handled in the store, but local handling can be added here if needed
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? `Please try again.\n\n${error.message}`
+          : "Please try again.";
+
+      Alert.alert("Failed to save expense", message);
     }
   };
 

@@ -150,12 +150,13 @@ export const useExpenseById = (id?: string) => {
   );
 };
 
+export const useFetchExpenses = () => {
+  return useExpenseStore(selectFetchExpenses);
+};
+
 export const useExpenses = () => {
   return pipe(
-    (state: ExpenseStore) => ({
-      expenses: selectAllExpenses(state),
-      fetchExpenses: selectFetchExpenses(state),
-    }),
+    selectAllExpenses,
     (selector) => useShallow(selector),
     (selector) => useCallback(selector, []),
     (selector) => useExpenseStore(selector)

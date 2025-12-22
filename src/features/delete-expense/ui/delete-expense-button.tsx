@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { IconButton } from "@shared/ui";
 import theme from "@shared/config/theme";
 import { useExpenseDelete } from "@entities/expense";
+import { Alert } from "react-native";
 
 interface DeleteExpenseButtonProps {
   id: string;
@@ -26,8 +27,13 @@ export const DeleteExpenseButton = ({
     try {
       await expenseDelete(id, { signal: abortControllerRef.current.signal });
       onDelete?.();
-    } catch {
-      // Error is handled in the store
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? `Please try again.\n\n${error.message}`
+          : "Please try again.";
+
+      Alert.alert("Failed to delete expense", message);
     }
   };
 
