@@ -48,6 +48,7 @@ export const expenseApi = {
       expenseData,
       { signal }
     );
+
     return response.data.name; // Returns ID from Firebase
   },
 

@@ -1,21 +1,19 @@
+import { useEffect, useMemo } from "react";
 import { ScreenLayout, LoadingOverlay, ErrorOverlay } from "@shared/ui";
 import { ExpensesOutput } from "@widgets/expenses-output";
 import { AppRoutes, useAppNavigation } from "@shared/routes";
 import {
-  useExpenseLoading,
-  useExpenseError,
-  useFetchExpenses,
+  useExpenseActions,
+  useExpenseStatus,
   useRecentExpenses,
 } from "@entities/expense";
 import { createDateMinusDays } from "@entities/expense/lib/utils/createDateMinusDays";
-import { useEffect, useMemo } from "react";
 
 export const RecentExpensesScreen = () => {
   const navigation = useAppNavigation();
   const expenses = useRecentExpenses();
-  const fetchExpenses = useFetchExpenses();
-  const isLoading = useExpenseLoading();
-  const error = useExpenseError();
+  const { fetch } = useExpenseActions();
+  const { isLoading, error } = useExpenseStatus();
 
   const recentExpenses = useMemo(() => {
     const cutoffDate = createDateMinusDays(7);
@@ -29,13 +27,13 @@ export const RecentExpensesScreen = () => {
   useEffect(() => {
     const abortController = new AbortController();
 
-    void fetchExpenses({ signal: abortController.signal });
+    void fetch({ signal: abortController.signal });
 
     return () => abortController.abort();
-  }, [fetchExpenses]);
+  }, [fetch]);
 
   if (error && !isLoading) {
-    return <ErrorOverlay message={error} onConfirm={fetchExpenses} />;
+    return <ErrorOverlay message={error} onConfirm={fetch} />;
   }
 
   if (isLoading) {

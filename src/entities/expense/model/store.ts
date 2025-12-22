@@ -122,43 +122,27 @@ const useExpenseStore = create<ExpenseStore>()(
   })
 );
 
+// Selectors
+const selectAllExpenses = (state: ExpenseStore): Expense[] => state.expenses;
 const selectExpenseById = (id: string | undefined) => (state: ExpenseStore) =>
   id ? state.expenses.find((expense) => expense.id === id) : undefined;
-const selectAllExpenses = (state: ExpenseStore): Expense[] => state.expenses;
 const selectRecentExpenses =
   (days: number) =>
   (state: ExpenseStore): Expense[] => {
     const cutoffDate = createDateMinusDays(days);
     return state.expenses.filter((expense) => expense.date >= cutoffDate);
   };
-const selectRemoveExpense = (state: ExpenseStore) =>
-  state.actions.removeExpense;
-const selectAddExpense = (state: ExpenseStore) => state.actions.addExpense;
-const selectUpdateExpense = (state: ExpenseStore) =>
-  state.actions.updateExpense;
-const selectFetchExpenses = (state: ExpenseStore) =>
-  state.actions.fetchExpenses;
-const selectIsLoading = (state: ExpenseStore) => state.isLoading;
-const selectError = (state: ExpenseStore) => state.error;
+
+// Hooks
+export const useExpenses = () => {
+  return useExpenseStore(selectAllExpenses);
+};
 
 export const useExpenseById = (id?: string) => {
   return pipe(
     selectExpenseById(id),
     (selector) => useShallow(selector),
     (selector) => useCallback(selector, [id]),
-    (selector) => useExpenseStore(selector)
-  );
-};
-
-export const useFetchExpenses = () => {
-  return useExpenseStore(selectFetchExpenses);
-};
-
-export const useExpenses = () => {
-  return pipe(
-    selectAllExpenses,
-    (selector) => useShallow(selector),
-    (selector) => useCallback(selector, []),
     (selector) => useExpenseStore(selector)
   );
 };
@@ -172,22 +156,20 @@ export const useRecentExpenses = (days = 7) => {
   );
 };
 
-export const useExpenseAdd = () => {
-  return useExpenseStore(selectAddExpense);
-};
+export const useExpenseActions = () =>
+  useExpenseStore(
+    useShallow((s) => ({
+      fetch: s.actions.fetchExpenses,
+      add: s.actions.addExpense,
+      update: s.actions.updateExpense,
+      remove: s.actions.removeExpense,
+    }))
+  );
 
-export const useExpenseUpdate = () => {
-  return useExpenseStore(selectUpdateExpense);
-};
-
-export const useExpenseDelete = () => {
-  return useExpenseStore(selectRemoveExpense);
-};
-
-export const useExpenseLoading = () => {
-  return useExpenseStore(selectIsLoading);
-};
-
-export const useExpenseError = () => {
-  return useExpenseStore(selectError);
-};
+export const useExpenseStatus = () =>
+  useExpenseStore(
+    useShallow((s) => ({
+      isLoading: s.isLoading,
+      error: s.error,
+    }))
+  );

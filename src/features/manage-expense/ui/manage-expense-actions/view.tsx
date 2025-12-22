@@ -2,11 +2,7 @@ import { useEffect, useRef } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { Button } from "@shared/ui";
 import theme from "@shared/config/theme";
-import {
-  useExpenseAdd,
-  useExpenseUpdate,
-  type Expense,
-} from "@entities/expense";
+import { useExpenseActions, type Expense } from "@entities/expense";
 import type { ManageExpenseActionsContract } from "./types";
 
 export const ManageExpenseActions: ManageExpenseActionsContract = ({
@@ -16,8 +12,8 @@ export const ManageExpenseActions: ManageExpenseActionsContract = ({
   onCancel,
   onSuccess,
 }) => {
-  const expenseAdd = useExpenseAdd();
-  const expenseUpdate = useExpenseUpdate();
+  const { add, update } = useExpenseActions();
+
   const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -40,11 +36,11 @@ export const ManageExpenseActions: ManageExpenseActionsContract = ({
 
     try {
       if (isEditing && expenseId) {
-        await expenseUpdate(expenseId, expenseData, {
+        await update(expenseId, expenseData, {
           signal: abortControllerRef.current.signal,
         });
       } else {
-        await expenseAdd(expenseData, {
+        await add(expenseData, {
           signal: abortControllerRef.current.signal,
         });
       }
