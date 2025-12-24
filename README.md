@@ -70,8 +70,7 @@ src/
     ├── api/                # API client (Axios)
     ├── config/             # Theme configuration
     │   └── theme/          # Colors, spacing, fonts
-    ├── lib/                # Shared hooks
-    │   └── hooks/          # useAbortController, etc.
+    ├── hooks/              # Shared hooks
     ├── routes/             # Navigation types and hooks
     ├── store/              # App-level store
     ├── ui/                 # Shared UI components

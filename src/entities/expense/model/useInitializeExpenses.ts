@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAbortController } from "@shared/lib/hooks";
+import { useAbortController } from "@shared/hooks";
 import { useExpenseActions, useExpenseStatus } from "./store";
 
 export const useInitializeExpenses = () => {

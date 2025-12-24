@@ -2,7 +2,7 @@ import { View, StyleSheet } from "react-native";
 import { Button } from "@shared/ui";
 import theme from "@shared/config/theme";
 import { useExpenseActions, type Expense } from "@entities/expense";
-import { useAbortController } from "@shared/lib/hooks";
+import { useAbortController } from "@shared/hooks";
 import { showErrorAlert } from "@shared/utils/alert";
 import type { ManageExpenseActionsContract } from "./types";
 
