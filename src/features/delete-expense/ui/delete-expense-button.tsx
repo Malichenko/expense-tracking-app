@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
 import { IconButton } from "@shared/ui";
 import theme from "@shared/config/theme";
 import { useExpenseActions } from "@entities/expense";
 import { Alert } from "react-native";
+import { useAbortController } from "@shared/lib/hooks";
 
 interface DeleteExpenseButtonProps {
   id: string;
@@ -14,18 +14,11 @@ export const DeleteExpenseButton = ({
   onDelete,
 }: DeleteExpenseButtonProps) => {
   const { remove } = useExpenseActions();
-  const abortControllerRef = useRef<AbortController | null>(null);
-
-  useEffect(() => {
-    return () => {
-      abortControllerRef.current?.abort();
-    };
-  }, []);
+  const getSignal = useAbortController();
 
   const handleDelete = async () => {
-    abortControllerRef.current = new AbortController();
     try {
-      await remove(id, { signal: abortControllerRef.current.signal });
+      await remove(id, { signal: getSignal() });
       onDelete?.();
     } catch (error) {
       const message =

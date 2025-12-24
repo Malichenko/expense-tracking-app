@@ -7,20 +7,18 @@ import {
   useExpenseStatus,
 } from "@entities/expense";
 import { useEffect } from "react";
+import { useAbortController } from "@shared/lib/hooks";
 
 export const AllExpensesScreen = () => {
   const expenses = useExpenses();
   const { fetch } = useExpenseActions();
   const { isLoading, error } = useExpenseStatus();
   const navigation = useAppNavigation();
+  const getSignal = useAbortController();
 
   useEffect(() => {
-    const abortController = new AbortController();
-
-    fetch({ signal: abortController.signal });
-
-    return () => abortController.abort();
-  }, [fetch]);
+    void fetch({ signal: getSignal() });
+  }, [fetch, getSignal]);
 
   if (error && !isLoading) {
     return <ErrorOverlay message={error} onConfirm={fetch} />;

@@ -1,17 +1,14 @@
 import { apiClient } from "@shared/api";
 import type { Expense } from "../model/types";
+import {
+  mapEntityToDto,
+  mapExpenseRecordToEntities,
+  type ExpenseRecord,
+} from "../lib/mappers";
 
 interface ExpensesOptions {
   signal?: AbortSignal;
 }
-
-type ExpenseDto = {
-  amount: number;
-  date: string;
-  description: string;
-};
-
-type ExpenseRecord = Record<string, ExpenseDto>;
 
 export const expenseApi = {
   async fetchExpenses({ signal }: ExpensesOptions = {}) {
@@ -24,19 +21,7 @@ export const expenseApi = {
 
     if (!response.data) return [];
 
-    const expenses: Expense[] = [];
-
-    for (const key in response.data) {
-      const expense = response.data[key];
-      expenses.push({
-        id: key,
-        amount: expense.amount,
-        date: new Date(expense.date),
-        description: expense.description,
-      });
-    }
-
-    return expenses;
+    return mapExpenseRecordToEntities(response.data);
   },
 
   async addExpense(
@@ -45,7 +30,7 @@ export const expenseApi = {
   ) {
     const response = await apiClient.post<{ name: string }>(
       "/expenses.json",
-      expenseData,
+      mapEntityToDto(expenseData),
       { signal }
     );
 
@@ -57,7 +42,9 @@ export const expenseApi = {
     expenseData: Omit<Expense, "id">,
     { signal }: ExpensesOptions = {}
   ) {
-    return apiClient.put(`/expenses/${id}.json`, expenseData, { signal });
+    return apiClient.put(`/expenses/${id}.json`, mapEntityToDto(expenseData), {
+      signal,
+    });
   },
 
   async deleteExpense(id: string, { signal }: ExpensesOptions = {}) {

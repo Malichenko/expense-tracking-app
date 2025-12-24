@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { useShallow } from "zustand/shallow";
 
-import type { Expense, ExpenseStore, ExpenseUpsertData } from "./types";
+import type { Expense, ExpenseStore } from "./types";
 import { pipe } from "remeda";
 import { createDateMinusDays } from "../lib/utils/createDateMinusDays";
 import { sortExpensesByDateDescending } from "../lib/utils/sortExpensesByDateDescending";
@@ -69,7 +69,7 @@ const useExpenseStore = create<ExpenseStore>()(
 
           await handleAsync(operation, "Could not fetch expenses.")();
         },
-        addExpense: async (expenseData: ExpenseUpsertData, options) => {
+        addExpense: async (expenseData, options) => {
           const operation = async () => {
             const id = await expenseApi.addExpense(expenseData, {
               signal: options?.signal,
@@ -86,11 +86,7 @@ const useExpenseStore = create<ExpenseStore>()(
 
           return handleAsync(operation, "Could not add expense.")();
         },
-        updateExpense: async (
-          id: string,
-          expenseData: ExpenseUpsertData,
-          options
-        ) => {
+        updateExpense: async (id, expenseData, options) => {
           const operation = async () => {
             await expenseApi.updateExpense(id, expenseData, {
               signal: options?.signal,
@@ -105,7 +101,7 @@ const useExpenseStore = create<ExpenseStore>()(
 
           return handleAsync(operation, "Could not update expense.")();
         },
-        removeExpense: async (id: string, options) => {
+        removeExpense: async (id, options) => {
           const operation = async () => {
             await expenseApi.deleteExpense(id, { signal: options?.signal });
             set((state) => {

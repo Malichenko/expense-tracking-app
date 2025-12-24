@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { Button } from "@shared/ui";
 import theme from "@shared/config/theme";
 import { useExpenseActions, type Expense } from "@entities/expense";
+import { useAbortController } from "@shared/lib/hooks";
 import type { ManageExpenseActionsContract } from "./types";
 
 export const ManageExpenseActions: ManageExpenseActionsContract = ({
@@ -13,14 +13,7 @@ export const ManageExpenseActions: ManageExpenseActionsContract = ({
   onSuccess,
 }) => {
   const { add, update } = useExpenseActions();
-
-  const abortControllerRef = useRef<AbortController | null>(null);
-
-  useEffect(() => {
-    return () => {
-      abortControllerRef.current?.abort();
-    };
-  }, []);
+  const getSignal = useAbortController();
 
   const handleConfirm = async () => {
     const { data, isValid } = formState;
@@ -32,16 +25,14 @@ export const ManageExpenseActions: ManageExpenseActionsContract = ({
       date: data.date,
     };
 
-    abortControllerRef.current = new AbortController();
-
     try {
       if (isEditing && expenseId) {
         await update(expenseId, expenseData, {
-          signal: abortControllerRef.current.signal,
+          signal: getSignal(),
         });
       } else {
         await add(expenseData, {
-          signal: abortControllerRef.current.signal,
+          signal: getSignal(),
         });
       }
       onSuccess();
