@@ -169,5 +169,22 @@ export default [
       "boundaries/element-types": "off",
     },
   },
+  {
+    files: ["src/entities/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@entities/*"],
+              message:
+                "Entities must not import from other entities or their own public API. Use relative imports within the same entity slice.",
+            },
+          ],
+        },
+      ],
+    },
+  },
 ];
 

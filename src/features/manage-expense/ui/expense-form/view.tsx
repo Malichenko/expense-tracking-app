@@ -37,7 +37,7 @@ export const ExpenseForm: ExpenseFormContract = ({ expense, children }) => {
             placeholder="Select date"
             maxDate={new Date()}
             required
-            onValidationChange={updateFieldValidity}
+            onValidationChange={updateFieldValidity.bind(null, "date")}
           />
 
           <AmountInput
@@ -46,7 +46,7 @@ export const ExpenseForm: ExpenseFormContract = ({ expense, children }) => {
             onChangeText={updateAmount}
             placeholder="0.00"
             required
-            onValidationChange={updateFieldValidity}
+            onValidationChange={updateFieldValidity.bind(null, "amount")}
           />
 
           <DescriptionInput
@@ -56,7 +56,7 @@ export const ExpenseForm: ExpenseFormContract = ({ expense, children }) => {
             placeholder="Enter description"
             maxLength={200}
             required
-            onValidationChange={updateFieldValidity}
+            onValidationChange={updateFieldValidity.bind(null, "description")}
           />
         </View>
 

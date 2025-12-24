@@ -1,8 +1,8 @@
 import { IconButton } from "@shared/ui";
 import theme from "@shared/config/theme";
 import { useExpenseActions } from "@entities/expense";
-import { Alert } from "react-native";
 import { useAbortController } from "@shared/lib/hooks";
+import { showErrorAlert } from "@shared/utils/alert";
 
 interface DeleteExpenseButtonProps {
   id: string;
@@ -21,12 +21,7 @@ export const DeleteExpenseButton = ({
       await remove(id, { signal: getSignal() });
       onDelete?.();
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? `Please try again.\n\n${error.message}`
-          : "Please try again.";
-
-      Alert.alert("Failed to delete expense", message);
+      showErrorAlert("Failed to delete expense", error);
     }
   };
 

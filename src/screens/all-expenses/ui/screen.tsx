@@ -1,36 +1,24 @@
 import { ScreenLayout, LoadingOverlay, ErrorOverlay } from "@shared/ui";
 import { ExpensesOutput } from "@widgets/expenses-output";
 import { AppRoutes, useAppNavigation } from "@shared/routes";
-import {
-  useExpenseActions,
-  useExpenses,
-  useExpenseStatus,
-} from "@entities/expense";
-import { useEffect } from "react";
-import { useAbortController } from "@shared/lib/hooks";
+import { useExpenses, useInitializeExpenses } from "@entities/expense";
 
 export const AllExpensesScreen = () => {
-  const expenses = useExpenses();
-  const { fetch } = useExpenseActions();
-  const { isLoading, error } = useExpenseStatus();
   const navigation = useAppNavigation();
-  const getSignal = useAbortController();
+  const expenses = useExpenses();
+  const { isLoading, error, refetch } = useInitializeExpenses();
 
-  useEffect(() => {
-    void fetch({ signal: getSignal() });
-  }, [fetch, getSignal]);
+  const expensePressHandler = (expenseId: string) => {
+    navigation.navigate(AppRoutes.ManageExpense, { expenseId });
+  };
 
   if (error && !isLoading) {
-    return <ErrorOverlay message={error} onConfirm={fetch} />;
+    return <ErrorOverlay message={error} onConfirm={refetch} />;
   }
 
   if (isLoading) {
     return <LoadingOverlay />;
   }
-
-  const expensePressHandler = (expenseId: string) => {
-    navigation.navigate(AppRoutes.ManageExpense, { expenseId });
-  };
 
   return (
     <ScreenLayout>

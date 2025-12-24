@@ -2,11 +2,28 @@ import { useCallback, useMemo, useState } from "react";
 import type { Expense } from "@entities/expense";
 
 import { getInitialExpenseFormData } from "../lib/utils/get-initial-expense-form-data";
-import type { ExpenseFormValues } from "./types";
+import type {
+  ExpenseFormField,
+  ExpenseFormValues,
+  FieldValidity,
+} from "./types";
+
+const INITIAL_FIELD_VALIDITY: FieldValidity = {
+  amount: true,
+  description: true,
+  date: true,
+};
 
 export const useExpenseForm = (expense?: Partial<Expense>) => {
   const [formData, setFormData] = useState(getInitialExpenseFormData(expense));
-  const [isValid, setIsValid] = useState(true);
+  const [fieldValidity, setFieldValidity] = useState<FieldValidity>(
+    INITIAL_FIELD_VALIDITY
+  );
+
+  const isValid = useMemo(
+    () => Object.values(fieldValidity).every(Boolean),
+    [fieldValidity]
+  );
 
   const updateField = useCallback(
     <K extends keyof ExpenseFormValues>(
@@ -31,9 +48,12 @@ export const useExpenseForm = (expense?: Partial<Expense>) => {
     [updateField]
   );
 
-  const updateFieldValidity = useCallback((nextIsValid: boolean) => {
-    setIsValid(nextIsValid);
-  }, []);
+  const updateFieldValidity = useCallback(
+    (field: ExpenseFormField, isFieldValid: boolean) => {
+      setFieldValidity((prev) => ({ ...prev, [field]: isFieldValid }));
+    },
+    []
+  );
 
   return {
     formData,

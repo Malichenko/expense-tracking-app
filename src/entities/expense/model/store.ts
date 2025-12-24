@@ -122,12 +122,11 @@ const useExpenseStore = create<ExpenseStore>()(
 const selectAllExpenses = (state: ExpenseStore): Expense[] => state.expenses;
 const selectExpenseById = (id: string | undefined) => (state: ExpenseStore) =>
   id ? state.expenses.find((expense) => expense.id === id) : undefined;
-const selectRecentExpenses =
-  (days: number) =>
-  (state: ExpenseStore): Expense[] => {
-    const cutoffDate = createDateMinusDays(days);
-    return state.expenses.filter((expense) => expense.date >= cutoffDate);
-  };
+const selectRecentExpenses = (days: number) => {
+  const cutoffDate = createDateMinusDays(days);
+  return (state: ExpenseStore): Expense[] =>
+    state.expenses.filter((expense) => expense.date >= cutoffDate);
+};
 
 // Hooks
 export const useExpenses = () => {
@@ -135,12 +134,7 @@ export const useExpenses = () => {
 };
 
 export const useExpenseById = (id?: string) => {
-  return pipe(
-    selectExpenseById(id),
-    (selector) => useShallow(selector),
-    (selector) => useCallback(selector, [id]),
-    (selector) => useExpenseStore(selector)
-  );
+  return useExpenseStore(selectExpenseById(id));
 };
 
 export const useRecentExpenses = (days = 7) => {

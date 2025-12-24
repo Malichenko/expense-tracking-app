@@ -1,8 +1,9 @@
-import { View, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Button } from "@shared/ui";
 import theme from "@shared/config/theme";
 import { useExpenseActions, type Expense } from "@entities/expense";
 import { useAbortController } from "@shared/lib/hooks";
+import { showErrorAlert } from "@shared/utils/alert";
 import type { ManageExpenseActionsContract } from "./types";
 
 export const ManageExpenseActions: ManageExpenseActionsContract = ({
@@ -37,12 +38,7 @@ export const ManageExpenseActions: ManageExpenseActionsContract = ({
       }
       onSuccess();
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? `Please try again.\n\n${error.message}`
-          : "Please try again.";
-
-      Alert.alert("Failed to save expense", message);
+      showErrorAlert("Failed to save expense", error);
     }
   };
 
