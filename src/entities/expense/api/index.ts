@@ -34,7 +34,7 @@ export const expenseApi = {
       { signal }
     );
 
-    return response.data.name; // Returns ID from Firebase
+    return response.data.name;
   },
 
   async updateExpense(

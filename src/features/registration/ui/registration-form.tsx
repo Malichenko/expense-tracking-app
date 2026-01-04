@@ -4,12 +4,14 @@ import { Button, EmailInput, Input } from "@shared/ui";
 import { useRegistrationForm } from "../model/useRegistrationForm";
 import { authApi, authActions } from "@entities/auth";
 import { showErrorAlert } from "@shared/utils/alert";
+import { useAbortController } from "@shared/hooks";
 
 interface RegistrationFormProps {
   onSuccess?: () => void;
 }
 // TODO: Refactor this component to fields etc
 export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
+  const getSignal = useAbortController();
   const {
     email,
     password,
@@ -29,7 +31,9 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
       const credentials = handleSubmit();
 
       if (credentials) {
-        const user = await authApi.register(credentials);
+        const user = await authApi.register(credentials, {
+          signal: getSignal(),
+        });
         authActions.setUser(user);
 
         Alert.alert("Success", "Account created successfully!", [

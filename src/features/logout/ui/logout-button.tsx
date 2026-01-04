@@ -1,15 +1,17 @@
-import React from "react";
 import { Alert } from "react-native";
 
 import { Button } from "@shared/ui/button";
 import { authApi, authActions } from "@entities/auth";
 import { showErrorAlert } from "@shared/utils/alert";
+import { useAbortController } from "@shared/hooks";
 
 interface LogoutButtonProps {
   onLogout?: () => void;
 }
 
 export const LogoutButton = ({ onLogout }: LogoutButtonProps) => {
+  const getSignal = useAbortController();
+
   const handleLogout = async () => {
     Alert.alert("Logout", "Are you sure you want to logout?", [
       {
@@ -21,7 +23,7 @@ export const LogoutButton = ({ onLogout }: LogoutButtonProps) => {
         style: "destructive",
         onPress: async () => {
           try {
-            await authApi.logout();
+            await authApi.logout({ signal: getSignal() });
             authActions.reset();
             onLogout?.();
           } catch (error) {
