@@ -1,6 +1,7 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 import { tokenStorage } from "../secure-storage";
+import { authHandlersRegistry } from "./auth-handlers-registry";
 
 export const apiClient = axios.create({
   baseURL: process.env.EXPO_PUBLIC_FIREBASE_BACKEND_URL,
@@ -68,9 +69,7 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // TODO: Cannot import from the entities layer as is topper layer. Need to think how to resolve it.
-        const { authApi } = await import("@entities/auth/api");
-        const newToken = await authApi.refreshToken();
+        const newToken = await authHandlersRegistry.refreshToken();
 
         if (newToken) {
           processQueue(null, newToken);
@@ -83,16 +82,12 @@ apiClient.interceptors.response.use(
         }
 
         processQueue(new Error("Token refresh failed"), null);
-        // TODO: Cannot import from the entities layer as is topper layer. Need to think how to resolve it.
-        const { authActions } = await import("@entities/auth/model/store");
-        authActions.reset();
+        authHandlersRegistry.resetAuth();
 
         return Promise.reject(error);
       } catch (refreshError) {
         processQueue(refreshError as Error, null);
-        // TODO: Cannot import from the entities layer as is topper layer. Need to think how to resolve it.
-        const { authActions } = await import("@entities/auth/model/store");
-        authActions.reset();
+        authHandlersRegistry.resetAuth();
 
         return Promise.reject(refreshError);
       } finally {

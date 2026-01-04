@@ -14,3 +14,4 @@ export type {
   RegistrationCredentials,
 } from "./model/types";
 export { AuthLayout } from "./ui";
+export { setupAuthHandlers } from "./lib/setup-auth-handlers";
