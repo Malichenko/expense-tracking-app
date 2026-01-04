@@ -7,6 +7,8 @@ export type RootStackParamList = {
   [AppRoutes.RecentExpenses]: undefined;
   [AppRoutes.AllExpenses]: undefined;
   [AppRoutes.ManageExpense]: { expenseId: string } | undefined;
+  [AppRoutes.Login]: undefined;
+  [AppRoutes.Registration]: undefined;
 };
 
 export type ManageExpenseScreenProps = NativeStackScreenProps<
@@ -14,9 +16,27 @@ export type ManageExpenseScreenProps = NativeStackScreenProps<
   AppRoutes.ManageExpense
 >;
 
+export type LoginScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  AppRoutes.Login
+>;
+
+export type RegistrationScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  AppRoutes.Registration
+>;
+
 export type ScreenProps = {
   [AppRoutes.ManageExpense]: NativeStackScreenProps<
     RootStackParamList,
     AppRoutes.ManageExpense
+  >;
+  [AppRoutes.Login]: NativeStackScreenProps<
+    RootStackParamList,
+    AppRoutes.Login
+  >;
+  [AppRoutes.Registration]: NativeStackScreenProps<
+    RootStackParamList,
+    AppRoutes.Registration
   >;
 };

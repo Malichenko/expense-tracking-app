@@ -6,6 +6,8 @@ export { Input } from "./input";
 export { AmountInput } from "./amount-input";
 export { DescriptionInput } from "./description-input";
 export { DateInput } from "./date-input";
+export { EmailInput } from "./email-input";
+export { PasswordInput } from "./password-input";
 export { DismissKeyboard } from "./dismiss-keyboard";
 export { LoadingOverlay } from "./loading-overlay/view";
 export { ErrorOverlay } from "./error-overlay/view";

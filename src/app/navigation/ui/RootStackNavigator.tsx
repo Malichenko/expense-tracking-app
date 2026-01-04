@@ -17,7 +17,7 @@ export const RootStackNavigator = () => {
         headerTintColor: theme.palette.accent[50],
       }}
     >
-      {stacks.map((stack) => (
+      {stacks.main.map((stack) => (
         <Stack.Screen
           key={stack.name}
           name={stack.name}

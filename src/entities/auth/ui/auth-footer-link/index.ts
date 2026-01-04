@@ -1,0 +1,1 @@
+export { AuthFooterLink } from "./view";

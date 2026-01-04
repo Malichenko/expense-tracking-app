@@ -3,4 +3,6 @@ export enum AppRoutes {
   RecentExpenses = "RecentExpenses",
   AllExpenses = "AllExpenses",
   ManageExpense = "ManageExpense",
+  Login = "Login",
+  Registration = "Registration",
 }
