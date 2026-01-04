@@ -1,3 +1,2 @@
-export { apiClient } from "./client";
-export { authApiClient } from "./auth";
+export { apiClient, authApiClient } from "./clients";
 export { authHandlersRegistry } from "./auth-handlers-registry";

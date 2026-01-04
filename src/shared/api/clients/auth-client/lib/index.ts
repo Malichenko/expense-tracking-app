@@ -1,0 +1,1 @@
+export { authEndpoints } from "./endpoints";
