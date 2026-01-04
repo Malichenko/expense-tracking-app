@@ -60,6 +60,15 @@ const useAuthStore = create<AuthStore>()(
             state.error = null;
           });
         },
+        logout: async () => {
+          await authApi.logout();
+          set((state) => {
+            state.user = null;
+            state.isAuthenticated = false;
+            state.isLoading = false;
+            state.error = null;
+          });
+        },
         fetchCurrentUser: async (options) => {
           const operation = async () => {
             const user = await authApi.getCurrentUser({
@@ -92,6 +101,7 @@ export const useAuthActions = () =>
       setUser: s.actions.setUser,
       setError: s.actions.setError,
       reset: s.actions.reset,
+      logout: s.actions.logout,
       fetchCurrentUser: s.actions.fetchCurrentUser,
     }))
   );
@@ -109,6 +119,7 @@ export const authActions = {
   setError: (error: string | null) =>
     useAuthStore.getState().actions.setError(error),
   reset: () => useAuthStore.getState().actions.reset(),
+  logout: () => useAuthStore.getState().actions.logout(),
   fetchCurrentUser: (options?: { signal?: AbortSignal }) =>
     useAuthStore.getState().actions.fetchCurrentUser(options),
 };

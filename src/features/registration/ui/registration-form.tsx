@@ -1,4 +1,4 @@
-import { Alert, View } from "react-native";
+import { View } from "react-native";
 
 import { Button, EmailInput, Input } from "@shared/ui";
 import { useRegistrationForm } from "../model/useRegistrationForm";
@@ -6,23 +6,21 @@ import { authApi, authActions } from "@entities/auth";
 import { showErrorAlert } from "@shared/utils/alert";
 import { useAbortController } from "@shared/hooks";
 
-interface RegistrationFormProps {
-  onSuccess?: () => void;
-}
 // TODO: Refactor this component to fields etc
-export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
+export const RegistrationForm = () => {
   const getSignal = useAbortController();
   const {
     email,
+    emailConfirmation,
     password,
     confirmPassword,
-    displayName,
     errors,
     isSubmitting,
     setEmail,
+    setEmailConfirmation,
     setPassword,
     setConfirmPassword,
-    setDisplayName,
+    setIsSubmitting,
     handleSubmit,
   } = useRegistrationForm();
 
@@ -35,16 +33,11 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
           signal: getSignal(),
         });
         authActions.setUser(user);
-
-        Alert.alert("Success", "Account created successfully!", [
-          {
-            text: "OK",
-            onPress: onSuccess,
-          },
-        ]);
       }
     } catch (error) {
       showErrorAlert("Registration failed", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -59,14 +52,13 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
         required
       />
 
-      <Input
-        label="Display Name (Optional)"
-        value={displayName}
-        onChangeText={setDisplayName}
-        errorMessage={errors.displayName}
-        placeholder="Enter your display name"
-        autoCapitalize="words"
-        autoComplete="name"
+      <EmailInput
+        label="Email Confirmation"
+        value={emailConfirmation}
+        onChangeText={setEmailConfirmation}
+        errorMessage={errors.emailConfirmation}
+        placeholder="Enter your email confirmation"
+        required
       />
 
       <Input

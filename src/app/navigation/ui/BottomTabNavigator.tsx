@@ -4,6 +4,7 @@ import { tabs } from "../lib/tabs";
 import theme from "@shared/config/theme";
 import { AddExpenseButton } from "@features/add-expense";
 import { RootStackParamList } from "@shared/routes";
+import { LogoutButton } from "@features/logout";
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
@@ -21,7 +22,8 @@ export const BottomTabNavigator = () => {
           elevation: 0,
         },
         tabBarActiveTintColor: theme.palette.accent[50],
-        headerRight: ({ tintColor }) => <AddExpenseButton color={tintColor} />,
+        headerLeft: ({ tintColor }) => <AddExpenseButton color={tintColor} />,
+        headerRight: ({ tintColor }) => <LogoutButton color={tintColor} />,
       }}
     >
       {tabs.map((tab) => (

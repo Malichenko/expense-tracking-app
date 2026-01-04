@@ -11,10 +11,6 @@ export const RegistrationScreen = ({
     navigation.navigate(AppRoutes.Login);
   };
 
-  const navigateToMain = () => {
-    navigation.replace(AppRoutes.MainTabs);
-  };
-
   return (
     <ScreenLayout>
       <AuthLayout.Root>
@@ -23,7 +19,7 @@ export const RegistrationScreen = ({
           subtitle="Join us and start tracking your expenses"
         />
 
-        <RegistrationForm onSuccess={navigateToMain} />
+        <RegistrationForm />
 
         <AuthLayout.Footer
           text="Already have an account? "

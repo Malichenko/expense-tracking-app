@@ -4,14 +4,14 @@ import { RegistrationCredentials } from "@entities/auth";
 
 interface RegistrationFormState {
   email: string;
+  emailConfirmation: string;
   password: string;
   confirmPassword: string;
-  displayName: string;
   errors: {
     email?: string;
+    emailConfirmation?: string;
     password?: string;
     confirmPassword?: string;
-    displayName?: string;
   };
   isSubmitting: boolean;
 }
@@ -19,9 +19,9 @@ interface RegistrationFormState {
 export const useRegistrationForm = () => {
   const [state, setState] = useState<RegistrationFormState>({
     email: "",
+    emailConfirmation: "",
     password: "",
     confirmPassword: "",
-    displayName: "",
     errors: {},
     isSubmitting: false,
   });
@@ -47,17 +47,20 @@ export const useRegistrationForm = () => {
       errors.confirmPassword = "Passwords don't match";
     }
 
-    if (state.displayName.trim() && state.displayName.trim().length < 2) {
-      errors.displayName = "Display name must be at least 2 characters";
+    if (
+      state.emailConfirmation.trim() &&
+      state.emailConfirmation.trim() !== state.email
+    ) {
+      errors.emailConfirmation = "Email confirmation must match the email";
     }
 
     setState((prev) => ({ ...prev, errors }));
     return Object.keys(errors).length === 0;
   };
 
-  const setField = (
-    field: keyof Omit<RegistrationFormState, "errors" | "isSubmitting">,
-    value: string
+  const setField = <Field extends keyof Omit<RegistrationFormState, "errors">>(
+    field: Field,
+    value: RegistrationFormState[Field]
   ) => {
     setState((prev) => ({
       ...prev,
@@ -74,7 +77,6 @@ export const useRegistrationForm = () => {
     const credentials: RegistrationCredentials = {
       email: state.email.trim(),
       password: state.password,
-      displayName: state.displayName.trim() || undefined,
     };
 
     return credentials;
@@ -84,15 +86,17 @@ export const useRegistrationForm = () => {
     email: state.email,
     password: state.password,
     confirmPassword: state.confirmPassword,
-    displayName: state.displayName,
+    emailConfirmation: state.emailConfirmation,
     errors: state.errors,
     isSubmitting: state.isSubmitting,
     setEmail: (email: string) => setField("email", email),
     setPassword: (password: string) => setField("password", password),
+    setIsSubmitting: (isSubmitting: boolean) =>
+      setField("isSubmitting", isSubmitting),
     setConfirmPassword: (confirmPassword: string) =>
       setField("confirmPassword", confirmPassword),
-    setDisplayName: (displayName: string) =>
-      setField("displayName", displayName),
+    setEmailConfirmation: (emailConfirmation: string) =>
+      setField("emailConfirmation", emailConfirmation),
     handleSubmit,
   };
 };
