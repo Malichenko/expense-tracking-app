@@ -1,6 +1,6 @@
 # Expense Tracker App
 
-A modern React Native expense tracking application built with Expo and following Feature-Sliced Design (FSD) architecture.
+A modern React Native expense tracking application built with Expo and following Feature-Sliced Design (FSD) architecture. Features Firebase authentication with secure token management and automatic token refresh.
 
 ## 🚀 Tech Stack
 
@@ -11,15 +11,21 @@ A modern React Native expense tracking application built with Expo and following
 - **Expo 54** - Development platform and toolchain
 - **TypeScript 5.9** - Type-safe JavaScript
 
+### Authentication & Security
+
+- **Firebase Auth** - User authentication (login, registration)
+- **Expo Secure Store** - Encrypted token storage
+- **Automatic Token Refresh** - Seamless session management with request queuing
+
 ### State Management & Data
 
 - **Zustand 5** - Lightweight state management with Immer middleware
-- **Axios** - HTTP client for API communication
+- **Axios** - HTTP client with interceptors for auth
 - **Zod** - Schema validation for forms
 
 ### Navigation
 
-- **React Navigation 7** - Native stack and bottom tab navigation
+- **React Navigation 7** - Native stack and bottom tab navigation with auth guards
 
 ### Utilities
 
@@ -31,6 +37,22 @@ A modern React Native expense tracking application built with Expo and following
 - **ESLint 9** - Linting with FSD boundaries enforcement
 - **Prettier** - Code formatting
 
+## ✨ Features
+
+### Authentication
+
+- Email/password registration and login
+- Automatic session persistence with secure token storage
+- Token refresh with request queuing (no failed requests during refresh)
+- Protected routes with auth guards
+
+### Expense Management
+
+- Create, edit, and delete expenses
+- View all expenses or filter by recent (last 7 days)
+- Expense summary with total calculation
+- Form validation with Zod schemas
+
 ## 📁 Project Structure
 
 This project follows the Feature-Sliced Design (FSD) architecture:
@@ -41,12 +63,17 @@ src/
 │   ├── navigation/         # Navigation configuration
 │   │   ├── lib/            # Stack and tab definitions
 │   │   └── ui/             # Navigator components
+│   │       ├── AuthNavigator.tsx      # Auth guard navigator
+│   │       ├── BottomTabNavigator.tsx # Main tab navigation
+│   │       └── RootStackNavigator.tsx # Root stack
 │   └── providers/          # App providers (Router)
 │
 ├── screens/                # Full-screen views (pages layer)
 │   ├── all-expenses/       # All expenses list screen
+│   ├── login/              # Login screen
 │   ├── manage-expense/     # Add/Edit expense modal screen
-│   └── recent-expenses/    # Recent (7 days) expenses screen
+│   ├── recent-expenses/    # Recent (7 days) expenses screen
+│   └── registration/       # Registration screen
 │
 ├── widgets/                # Complex UI compositions
 │   └── expenses-output/    # Expenses list with summary widget
@@ -54,12 +81,24 @@ src/
 ├── features/               # User interactions
 │   ├── add-expense/        # Add expense button
 │   ├── delete-expense/     # Delete expense functionality
-│   └── manage-expense/     # Expense form and actions
-│       ├── lib/            # Form utilities
-│       ├── model/          # Form state management
-│       └── ui/             # Form components
+│   ├── login/              # Login form functionality
+│   │   ├── model/          # useLoginForm hook
+│   │   └── ui/             # Login form component
+│   ├── logout/             # Logout button
+│   ├── manage-expense/     # Expense form and actions
+│   │   ├── lib/            # Form utilities
+│   │   ├── model/          # Form state management
+│   │   └── ui/             # Form components
+│   └── registration/       # Registration form functionality
+│       ├── model/          # useRegistrationForm hook
+│       └── ui/             # Registration form component
 │
 ├── entities/               # Business entities
+│   ├── auth/               # Authentication entity
+│   │   ├── api/            # Auth API calls
+│   │   ├── lib/            # Mappers, auth handlers setup
+│   │   ├── model/          # Auth store, types, useInitializeAuth
+│   │   └── ui/             # Auth UI (layout, header, footer-link)
 │   └── expense/
 │       ├── api/            # Expense API calls
 │       ├── lib/            # Mappers, utils, constants
@@ -67,11 +106,19 @@ src/
 │       └── ui/             # Entity UI (list, summary)
 │
 └── shared/                 # Reusable infrastructure
-    ├── api/                # API client (Axios)
+    ├── api/                # API infrastructure
+    │   ├── auth-handlers-registry/ # Auth handlers registry pattern
+    │   ├── clients/        # API clients
+    │   │   ├── api-client.ts       # Main Axios client
+    │   │   └── auth-client/        # Firebase auth client
+    │   └── interceptors/   # Axios interceptors
+    │       ├── request/    # Auth request interceptor
+    │       └── response/   # Token refresh interceptor with queue
     ├── config/             # Theme configuration
     │   └── theme/          # Colors, spacing, fonts
     ├── hooks/              # Shared hooks
     ├── routes/             # Navigation types and hooks
+    ├── secure-storage/     # Encrypted token storage
     ├── store/              # App-level store
     ├── ui/                 # Shared UI components
     │   ├── amount-input/   # Currency input with validation
@@ -80,10 +127,12 @@ src/
     │   ├── date-input/     # Date picker input
     │   ├── description-input/
     │   ├── dismiss-keyboard/
+    │   ├── email-input/    # Email input with validation
     │   ├── error-overlay/  # Error state overlay
     │   ├── icon-button/    # Icon button
     │   ├── input/          # Base text input
     │   ├── loading-overlay/# Loading state overlay
+    │   ├── password-input/ # Password input with validation
     │   └── screen-layout/  # Screen wrapper
     └── utils/              # Utility functions
         ├── alert/          # Error alert helper
@@ -148,8 +197,44 @@ slice/
 
 - **Zustand** stores with **Immer** middleware for immutable updates
 - Selectors for derived data
-- Custom hooks for store access (`useExpenses`, `useExpenseById`, etc.)
+- Custom hooks for store access (`useExpenses`, `useExpenseById`, `useIsAuthenticated`, etc.)
 - Async operations with abort controller support
+
+### Authentication Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    AuthNavigator                             │
+│  (Guards protected routes, shows login/register if needed)   │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+┌─────────────────────────▼───────────────────────────────────┐
+│                    Auth Entity                               │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
+│  │  Auth Store │  │  Auth API   │  │  Auth Handlers      │  │
+│  │  (Zustand)  │  │  (Firebase) │  │  Setup              │  │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+┌─────────────────────────▼───────────────────────────────────┐
+│                 Shared Auth Infrastructure                   │
+│  ┌──────────────────┐  ┌────────────────────────────────┐   │
+│  │  Token Storage   │  │  Auth Handlers Registry        │   │
+│  │  (SecureStore)   │  │  (refreshToken, resetAuth)     │   │
+│  └──────────────────┘  └────────────────────────────────┘   │
+│  ┌──────────────────┐  ┌────────────────────────────────┐   │
+│  │  Auth Client     │  │  Interceptors                  │   │
+│  │  (Firebase API)  │  │  (Auth + Token Refresh)        │   │
+│  └──────────────────┘  └────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Key Features:**
+
+- **Automatic Token Refresh** - 401 responses trigger token refresh with request queuing
+- **Secure Storage** - Tokens stored encrypted via `expo-secure-store`
+- **Auth Guards** - Navigation protected by `AuthNavigator`
+- **Registry Pattern** - Decoupled auth handlers for interceptors
 
 ## 🎨 Theme
 
@@ -184,7 +269,8 @@ npm install
 Create a `.env` file with:
 
 ```env
-EXPO_PUBLIC_FIREBASE_BACKEND_URL=your_firebase_url
+EXPO_PUBLIC_FIREBASE_BACKEND_URL=your_firebase_realtime_database_url
+EXPO_PUBLIC_FIREBASE_API_KEY=your_firebase_web_api_key
 ```
 
 ### Running the App
