@@ -2,6 +2,7 @@ import { View, StyleSheet } from "react-native";
 import { Button } from "@shared/ui";
 import theme from "@shared/config/theme";
 import { useExpenseActions, type Expense } from "@entities/expense";
+import { useUser } from "@entities/auth";
 import { useAbortController } from "@shared/hooks";
 import { showErrorAlert } from "@shared/utils/alert";
 import type { ManageExpenseActionsContract } from "./types";
@@ -13,12 +14,13 @@ export const ManageExpenseActions: ManageExpenseActionsContract = ({
   onCancel,
   onSuccess,
 }) => {
+  const user = useUser();
   const { add, update } = useExpenseActions();
   const getSignal = useAbortController();
 
   const handleConfirm = async () => {
     const { data, isValid } = formState;
-    if (!isValid || !data.date) return;
+    if (!isValid || !data.date || !user?.uid) return;
 
     const expenseData: Omit<Expense, "id"> = {
       amount: Number.parseFloat(data.amount),
@@ -30,10 +32,12 @@ export const ManageExpenseActions: ManageExpenseActionsContract = ({
       if (isEditing && expenseId) {
         await update(expenseId, expenseData, {
           signal: getSignal(),
+          userId: user.uid,
         });
       } else {
         await add(expenseData, {
           signal: getSignal(),
+          userId: user.uid,
         });
       }
       onSuccess();

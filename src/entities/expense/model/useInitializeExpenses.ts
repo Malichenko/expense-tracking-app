@@ -1,15 +1,26 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useAbortController } from "@shared/hooks";
 import { useExpenseActions, useExpenseStatus } from "./store";
 
-export const useInitializeExpenses = () => {
+interface UseInitializeExpensesOptions {
+  userId: string | undefined;
+}
+
+export const useInitializeExpenses = ({
+  userId,
+}: UseInitializeExpensesOptions) => {
   const { fetch } = useExpenseActions();
   const { isLoading, error } = useExpenseStatus();
   const getSignal = useAbortController();
 
-  useEffect(() => {
-    void fetch({ signal: getSignal() });
-  }, [fetch, getSignal]);
+  const refetch = useCallback(() => {
+    if (!userId) return;
+    return fetch({ signal: getSignal(), userId });
+  }, [fetch, getSignal, userId]);
 
-  return { isLoading, error, refetch: fetch };
+  useEffect(() => {
+    void refetch();
+  }, [refetch]);
+
+  return { isLoading, error, refetch };
 };

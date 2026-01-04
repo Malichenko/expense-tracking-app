@@ -15,20 +15,21 @@ export interface ExpenseStoreState {
 
 interface ExpenseStoreOptions {
   signal?: AbortSignal;
+  userId: string;
 }
 
 export interface ExpenseStoreActions {
   setExpenses: (expenses: Expense[]) => void;
-  fetchExpenses: (options?: ExpenseStoreOptions) => Promise<void>;
+  fetchExpenses: (options: ExpenseStoreOptions) => Promise<void>;
   addExpense: (
     expenseData: ExpenseUpsertData,
-    options?: ExpenseStoreOptions
+    options: ExpenseStoreOptions
   ) => Promise<string>;
-  removeExpense: (id: string, options?: ExpenseStoreOptions) => Promise<void>;
+  removeExpense: (id: string, options: ExpenseStoreOptions) => Promise<void>;
   updateExpense: (
     id: string,
     expenseData: ExpenseUpsertData,
-    options?: ExpenseStoreOptions
+    options: ExpenseStoreOptions
   ) => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;

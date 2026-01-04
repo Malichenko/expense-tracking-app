@@ -8,15 +8,16 @@ import {
 
 interface ExpensesOptions {
   signal?: AbortSignal;
+  userId: string;
 }
 
+const getUserExpensesPath = (userId: string) => `/users/${userId}/expenses`;
+
 export const expenseApi = {
-  async fetchExpenses({ signal }: ExpensesOptions = {}) {
+  async fetchExpenses({ signal, userId }: ExpensesOptions) {
     const response = await apiClient.get<ExpenseRecord | null>(
-      "/expenses.json",
-      {
-        signal,
-      }
+      `${getUserExpensesPath(userId)}.json`,
+      { signal }
     );
 
     if (!response.data) return [];
@@ -24,12 +25,10 @@ export const expenseApi = {
     return mapExpenseRecordToEntities(response.data);
   },
 
-  async addExpense(
-    expenseData: Omit<Expense, "id">,
-    { signal }: ExpensesOptions = {}
-  ) {
+  async addExpense(expenseData: Omit<Expense, "id">, options: ExpensesOptions) {
+    const { signal, userId } = options;
     const response = await apiClient.post<{ name: string }>(
-      "/expenses.json",
+      `${getUserExpensesPath(userId)}.json`,
       mapEntityToDto(expenseData),
       { signal }
     );
@@ -40,14 +39,20 @@ export const expenseApi = {
   async updateExpense(
     id: string,
     expenseData: Omit<Expense, "id">,
-    { signal }: ExpensesOptions = {}
+    options: ExpensesOptions
   ) {
-    return apiClient.put(`/expenses/${id}.json`, mapEntityToDto(expenseData), {
-      signal,
-    });
+    const { signal, userId } = options;
+    return apiClient.put(
+      `${getUserExpensesPath(userId)}/${id}.json`,
+      mapEntityToDto(expenseData),
+      { signal }
+    );
   },
 
-  async deleteExpense(id: string, { signal }: ExpensesOptions = {}) {
-    return apiClient.delete(`/expenses/${id}.json`, { signal });
+  async deleteExpense(id: string, options: ExpensesOptions) {
+    const { signal, userId } = options;
+    return apiClient.delete(`${getUserExpensesPath(userId)}/${id}.json`, {
+      signal,
+    });
   },
 };

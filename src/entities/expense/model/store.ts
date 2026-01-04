@@ -59,7 +59,8 @@ const useExpenseStore = create<ExpenseStore>()(
         fetchExpenses: async (options) => {
           const operation = async () => {
             const expenses = await expenseApi.fetchExpenses({
-              signal: options?.signal,
+              signal: options.signal,
+              userId: options.userId,
             });
 
             set((state) => {
@@ -72,7 +73,8 @@ const useExpenseStore = create<ExpenseStore>()(
         addExpense: async (expenseData, options) => {
           const operation = async () => {
             const id = await expenseApi.addExpense(expenseData, {
-              signal: options?.signal,
+              signal: options.signal,
+              userId: options.userId,
             });
             const expense: Expense = { id, ...expenseData };
             set((state) => {
@@ -89,7 +91,8 @@ const useExpenseStore = create<ExpenseStore>()(
         updateExpense: async (id, expenseData, options) => {
           const operation = async () => {
             await expenseApi.updateExpense(id, expenseData, {
-              signal: options?.signal,
+              signal: options.signal,
+              userId: options.userId,
             });
             set((state) => {
               const index = state.expenses.findIndex((e) => e.id === id);
@@ -103,7 +106,10 @@ const useExpenseStore = create<ExpenseStore>()(
         },
         removeExpense: async (id, options) => {
           const operation = async () => {
-            await expenseApi.deleteExpense(id, { signal: options?.signal });
+            await expenseApi.deleteExpense(id, {
+              signal: options.signal,
+              userId: options.userId,
+            });
             set((state) => {
               state.expenses = state.expenses.filter(
                 (expense) => expense.id !== id
