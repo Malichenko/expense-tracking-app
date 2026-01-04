@@ -1,14 +1,13 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
-import { useAuthStore } from "@entities/auth";
-import { useInitializeAuth } from "@entities/auth";
+import { useAuthStatus, useInitializeAuth } from "@entities/auth";
 import { AuthNavigator } from "../navigation/ui/AuthNavigator";
 import { LoadingOverlay } from "@shared/ui";
 import { RootStackNavigator } from "@app/navigation";
 
 export const RouterProvider = () => {
-  const { isLoading } = useAuthStore();
+  const { isLoading } = useAuthStatus();
 
   // Initialize auth on app start
   useInitializeAuth();

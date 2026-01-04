@@ -1,14 +1,15 @@
 import { type FC, type PropsWithChildren } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { useAuthStore } from "@entities/auth";
+import { useIsAuthenticated, useAuthStatus } from "@entities/auth";
 import { type RootStackParamList } from "@shared/routes";
 import { stacks } from "../lib/stacks";
 
 const AuthStack = createNativeStackNavigator<RootStackParamList>();
 
 export const AuthNavigator: FC<PropsWithChildren> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuthStore();
+  const isAuthenticated = useIsAuthenticated();
+  const { isLoading } = useAuthStatus();
 
   if (isLoading) {
     return null; // Loading overlay will be handled by parent

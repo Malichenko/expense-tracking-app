@@ -24,9 +24,17 @@ export interface AuthState {
   error: string | null;
 }
 
-export interface AuthStore extends AuthState {
+interface AsyncOptions {
+  signal?: AbortSignal;
+}
+
+interface AuthActions {
   setUser: (user: User | null) => void;
-  setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
   reset: () => void;
+  fetchCurrentUser: (options?: AsyncOptions) => Promise<void>;
+}
+
+export interface AuthStore extends AuthState {
+  actions: AuthActions;
 }
