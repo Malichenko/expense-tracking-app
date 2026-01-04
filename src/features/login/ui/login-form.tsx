@@ -1,4 +1,4 @@
-import { Alert, View } from "react-native";
+import { View } from "react-native";
 
 import { Button, EmailInput, PasswordInput } from "@shared/ui";
 import { useLoginForm } from "../model/useLoginForm";
@@ -6,11 +6,7 @@ import { authApi, authActions } from "@entities/auth";
 import { showErrorAlert } from "@shared/utils/alert";
 import { useAbortController } from "@shared/hooks";
 
-interface LoginFormProps {
-  onSuccess?: () => void;
-}
-
-export const LoginForm = ({ onSuccess }: LoginFormProps) => {
+export const LoginForm = () => {
   const getSignal = useAbortController();
   const {
     email,
@@ -20,6 +16,7 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
     setEmail,
     setPassword,
     handleSubmit,
+    setIsSubmitting,
   } = useLoginForm();
 
   const onSubmit = async () => {
@@ -28,16 +25,11 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
       if (credentials) {
         const user = await authApi.login(credentials, { signal: getSignal() });
         authActions.setUser(user);
-
-        Alert.alert("Success", "Logged in successfully!", [
-          {
-            text: "OK",
-            onPress: onSuccess,
-          },
-        ]);
       }
     } catch (error) {
       showErrorAlert("Login failed", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

@@ -39,9 +39,14 @@ export const useLoginForm = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const setField = (
-    field: keyof Pick<LoginFormState, "email" | "password">,
-    value: string
+  const setField = <
+    Field extends keyof Pick<
+      LoginFormState,
+      "email" | "password" | "isSubmitting"
+    >,
+  >(
+    field: Field,
+    value: LoginFormState[Field]
   ) => {
     setState((prev) => ({
       ...prev,
@@ -75,6 +80,8 @@ export const useLoginForm = () => {
     isSubmitting: state.isSubmitting,
     setEmail: (email: string) => setField("email", email),
     setPassword: (password: string) => setField("password", password),
+    setIsSubmitting: (isSubmitting: boolean) =>
+      setField("isSubmitting", isSubmitting),
     handleSubmit,
   };
 };
