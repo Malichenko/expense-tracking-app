@@ -76,29 +76,32 @@ src/
 │   └── registration/       # Registration screen
 │
 ├── widgets/                # Complex UI compositions
+│   ├── auth-layout/        # Auth screens layout (header, footer, wrapper)
 │   └── expenses-output/    # Expenses list with summary widget
 │
 ├── features/               # User interactions
 │   ├── add-expense/        # Add expense button
 │   ├── delete-expense/     # Delete expense functionality
 │   ├── login/              # Login form functionality
-│   │   ├── model/          # useLoginForm hook
+│   │   ├── api/            # Login API call
+│   │   ├── model/          # useLoginForm hook, types
 │   │   └── ui/             # Login form component
-│   ├── logout/             # Logout button
+│   ├── logout/             # Logout functionality
+│   │   ├── api/            # Logout API call
+│   │   └── ui/             # Logout button
 │   ├── manage-expense/     # Expense form and actions
 │   │   ├── lib/            # Form utilities
 │   │   ├── model/          # Form state management
 │   │   └── ui/             # Form components
 │   └── registration/       # Registration form functionality
-│       ├── model/          # useRegistrationForm hook
+│       ├── api/            # Registration API call
+│       ├── model/          # useRegistrationForm hook, types
 │       └── ui/             # Registration form component
 │
 ├── entities/               # Business entities
-│   ├── auth/               # Authentication entity
-│   │   ├── api/            # Auth API calls
-│   │   ├── lib/            # Mappers, auth handlers setup
-│   │   ├── model/          # Auth store, types, useInitializeAuth
-│   │   └── ui/             # Auth UI (layout, header, footer-link)
+│   ├── user/               # User entity (authenticated user data)
+│   │   ├── api/            # User API calls (getCurrentUser)
+│   │   └── model/          # User store, types, useInitializeUser
 │   └── expense/
 │       ├── api/            # Expense API calls
 │       ├── lib/            # Mappers, utils, constants
@@ -107,7 +110,12 @@ src/
 │
 └── shared/                 # Reusable infrastructure
     ├── api/                # API infrastructure
-    │   ├── auth-handlers-registry/ # Auth handlers registry pattern
+    │   ├── auth/           # Auth utilities
+    │   │   ├── handlers-registry.ts  # Auth handlers registry (IoC)
+    │   │   ├── token-refresh.ts      # Token refresh logic
+    │   │   ├── store-auth-tokens.ts  # Token storage helper
+    │   │   ├── map-firebase-user.ts  # Firebase user mapper
+    │   │   └── types.ts              # Auth types (credentials, responses)
     │   ├── clients/        # API clients
     │   │   ├── api-client.ts       # Main Axios client
     │   │   └── auth-client/        # Firebase auth client
@@ -119,7 +127,6 @@ src/
     ├── hooks/              # Shared hooks
     ├── routes/             # Navigation types and hooks
     ├── secure-storage/     # Encrypted token storage
-    ├── store/              # App-level store
     ├── ui/                 # Shared UI components
     │   ├── amount-input/   # Currency input with validation
     │   ├── button/         # Button variants
@@ -197,7 +204,7 @@ slice/
 
 - **Zustand** stores with **Immer** middleware for immutable updates
 - Selectors for derived data
-- Custom hooks for store access (`useExpenses`, `useExpenseById`, `useIsAuthenticated`, etc.)
+- Custom hooks for store access (`useExpenses`, `useExpenseById`, `useUser`, `useIsAuthenticated`, etc.)
 - Async operations with abort controller support
 
 ### Authentication Architecture
@@ -209,17 +216,18 @@ slice/
 └─────────────────────────┬───────────────────────────────────┘
                           │
 ┌─────────────────────────▼───────────────────────────────────┐
-│                    Auth Entity                               │
+│              User Entity + Auth Features                     │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
-│  │  Auth Store │  │  Auth API   │  │  Auth Handlers      │  │
-│  │  (Zustand)  │  │  (Firebase) │  │  Setup              │  │
-│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
+│  │  User Store │  │  Login/     │  │  Auth Handlers      │  │
+│  │  (Zustand)  │  │  Register   │  │  Setup (app layer)  │  │
+│  └─────────────┘  │  Features   │  └─────────────────────┘  │
+│                   └─────────────┘                            │
 └─────────────────────────┬───────────────────────────────────┘
                           │
 ┌─────────────────────────▼───────────────────────────────────┐
 │                 Shared Auth Infrastructure                   │
 │  ┌──────────────────┐  ┌────────────────────────────────┐   │
-│  │  Token Storage   │  │  Auth Handlers Registry        │   │
+│  │  Token Storage   │  │  Auth Handlers Registry (IoC)  │   │
 │  │  (SecureStore)   │  │  (refreshToken, resetAuth)     │   │
 │  └──────────────────┘  └────────────────────────────────┘   │
 │  ┌──────────────────┐  ┌────────────────────────────────┐   │
