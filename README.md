@@ -114,7 +114,6 @@ src/
     │   │   ├── handlers-registry.ts  # Auth handlers registry (IoC)
     │   │   ├── token-refresh.ts      # Token refresh logic
     │   │   ├── store-auth-tokens.ts  # Token storage helper
-    │   │   ├── map-firebase-user.ts  # Firebase user mapper
     │   │   └── types.ts              # Auth types (credentials, responses)
     │   ├── clients/        # API clients
     │   │   ├── api-client.ts       # Main Axios client
