@@ -1,4 +1,4 @@
-import { authApiClient } from "../clients";
+import { authApiClient } from "../clients/auth-client/client";
 import { tokenStorage } from "../../secure-storage";
 import type { AsyncOptions } from "../types";
 

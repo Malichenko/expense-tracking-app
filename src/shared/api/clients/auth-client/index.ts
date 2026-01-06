@@ -1,1 +1,0 @@
-export { authApiClient } from "./client";

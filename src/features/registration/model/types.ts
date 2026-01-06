@@ -1,3 +1,3 @@
-import type { AuthCredentials } from "@shared/api/auth/types";
+import type { AuthCredentials } from "@shared/api";
 
 export type RegistrationCredentials = AuthCredentials;

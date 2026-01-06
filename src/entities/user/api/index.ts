@@ -1,9 +1,11 @@
-import { authApiClient } from "@shared/api";
+import {
+  authApiClient,
+  refreshToken,
+  type AsyncOptions,
+  type FirebaseLookupResponse,
+} from "@shared/api";
 import { tokenStorage } from "@shared/secure-storage";
-import { refreshToken } from "@shared/api/auth";
 import type { User } from "../model/types";
-import type { FirebaseLookupResponse } from "@shared/api/auth/types";
-import type { AsyncOptions } from "@shared/api";
 import { mapFirebaseToUser } from "../lib";
 
 export const userApi = {

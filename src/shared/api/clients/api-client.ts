@@ -1,8 +1,6 @@
 import axios from "axios";
-import {
-  authRequestInterceptor,
-  createTokenRefreshInterceptor,
-} from "../interceptors";
+import { authRequestInterceptor } from "../interceptors/request/auth-request-interceptor";
+import { createTokenRefreshInterceptor } from "../interceptors/response/token-refresh-interceptor";
 
 export const apiClient = axios.create({
   baseURL: process.env.EXPO_PUBLIC_FIREBASE_BACKEND_URL,
