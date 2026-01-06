@@ -18,13 +18,7 @@ export const RegistrationForm = () => {
     confirmPasswordError,
     isFormValid,
     isSubmitting,
-    setEmail,
-    setEmailConfirmation,
-    setPassword,
-    setConfirmPassword,
-    setEmailValidity,
-    setPasswordValidity,
-    setIsSubmitting,
+    setField,
     getCredentials,
   } = useRegistrationForm();
 
@@ -32,7 +26,7 @@ export const RegistrationForm = () => {
     const credentials = getCredentials();
     if (!credentials) return;
 
-    setIsSubmitting(true);
+    setField.isSubmitting(true);
 
     try {
       const user = await registrationApi.register(credentials, {
@@ -42,7 +36,7 @@ export const RegistrationForm = () => {
     } catch (error) {
       showErrorAlert("Registration failed", error);
     } finally {
-      setIsSubmitting(false);
+      setField.isSubmitting(false);
     }
   };
 
@@ -51,8 +45,8 @@ export const RegistrationForm = () => {
       <EmailInput
         label="Email"
         value={email}
-        onChangeText={setEmail}
-        onValidationChange={setEmailValidity}
+        onChangeText={setField.email}
+        onValidationChange={setField.validity.email}
         placeholder="Enter your email"
         required
       />
@@ -60,7 +54,7 @@ export const RegistrationForm = () => {
       <EmailInput
         label="Email Confirmation"
         value={emailConfirmation}
-        onChangeText={setEmailConfirmation}
+        onChangeText={setField.emailConfirmation}
         errorMessage={emailConfirmationError}
         placeholder="Confirm your email"
       />
@@ -68,8 +62,8 @@ export const RegistrationForm = () => {
       <PasswordInput
         label="Password"
         value={password}
-        onChangeText={setPassword}
-        onValidationChange={setPasswordValidity}
+        onChangeText={setField.password}
+        onValidationChange={setField.validity.password}
         placeholder="Enter your password"
         required
       />
@@ -77,10 +71,10 @@ export const RegistrationForm = () => {
       <PasswordInput
         label="Confirm Password"
         value={confirmPassword}
-        onChangeText={setConfirmPassword}
+        onChangeText={setField.confirmPassword}
+        onValidationChange={setField.validity.confirmPassword}
         errorMessage={confirmPasswordError}
         placeholder="Confirm your password"
-        validateOnChange={false}
       />
 
       <Button

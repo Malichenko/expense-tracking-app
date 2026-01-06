@@ -1,4 +1,6 @@
+import { produce } from "immer";
 import { useCallback, useMemo, useState } from "react";
+import { setPath } from "remeda";
 
 import type { RegistrationCredentials } from "./types";
 
@@ -16,6 +18,23 @@ interface RegistrationFormState {
   isSubmitting: boolean;
 }
 
+type PathsOf<T, Prefix extends readonly string[] = []> = T extends object
+  ? {
+      [K in keyof T & string]:
+        | readonly [...Prefix, K]
+        | PathsOf<T[K], readonly [...Prefix, K]>;
+    }[keyof T & string]
+  : never;
+
+type ValueAtPath<T, P extends readonly string[]> = P extends readonly [
+  infer Head extends keyof T,
+  ...infer Rest extends readonly string[],
+]
+  ? Rest extends []
+    ? T[Head]
+    : ValueAtPath<T[Head], Rest>
+  : never;
+
 export const useRegistrationForm = () => {
   const [state, setState] = useState<RegistrationFormState>({
     email: "",
@@ -24,7 +43,7 @@ export const useRegistrationForm = () => {
     confirmPassword: "",
     validity: {
       email: false,
-      emailConfirmation: true,
+      emailConfirmation: false,
       password: false,
       confirmPassword: false,
     },
@@ -32,19 +51,19 @@ export const useRegistrationForm = () => {
   });
 
   const emailConfirmationError = useMemo(() => {
-    if (!state.emailConfirmation.trim()) return undefined;
     if (state.emailConfirmation.trim() !== state.email.trim()) {
       return "Email confirmation must match";
     }
-    return undefined;
+
+    return;
   }, [state.email, state.emailConfirmation]);
 
   const confirmPasswordError = useMemo(() => {
-    if (!state.confirmPassword.trim()) return "Please confirm your password";
     if (state.password !== state.confirmPassword) {
       return "Passwords don't match";
     }
-    return undefined;
+
+    return;
   }, [state.password, state.confirmPassword]);
 
   const isFormValid =
@@ -53,39 +72,50 @@ export const useRegistrationForm = () => {
     !emailConfirmationError &&
     !confirmPasswordError;
 
-  const setEmail = useCallback((email: string) => {
-    setState((prev) => ({ ...prev, email }));
-  }, []);
+  const _setField = useCallback(
+    <Path extends PathsOf<RegistrationFormState>>(
+      path: Path,
+      value: ValueAtPath<RegistrationFormState, Path>
+    ) => {
+      setState(produce((draft) => setPath(draft, path, value)));
+    },
+    []
+  );
 
-  const setEmailConfirmation = useCallback((emailConfirmation: string) => {
-    setState((prev) => ({ ...prev, emailConfirmation }));
-  }, []);
-
-  const setPassword = useCallback((password: string) => {
-    setState((prev) => ({ ...prev, password }));
-  }, []);
-
-  const setConfirmPassword = useCallback((confirmPassword: string) => {
-    setState((prev) => ({ ...prev, confirmPassword }));
-  }, []);
-
-  const setEmailValidity = useCallback((isValid: boolean) => {
-    setState((prev) => ({
-      ...prev,
-      validity: { ...prev.validity, email: isValid },
-    }));
-  }, []);
-
-  const setPasswordValidity = useCallback((isValid: boolean) => {
-    setState((prev) => ({
-      ...prev,
-      validity: { ...prev.validity, password: isValid },
-    }));
-  }, []);
-
-  const setIsSubmitting = useCallback((isSubmitting: boolean) => {
-    setState((prev) => ({ ...prev, isSubmitting }));
-  }, []);
+  const setField = useMemo(
+    () => ({
+      email(email: string) {
+        _setField(["email"], email);
+      },
+      emailConfirmation(emailConfirmation: string) {
+        _setField(["emailConfirmation"], emailConfirmation);
+      },
+      password(password: string) {
+        _setField(["password"], password);
+      },
+      confirmPassword(confirmPassword: string) {
+        _setField(["confirmPassword"], confirmPassword);
+      },
+      isSubmitting(isSubmitting: boolean) {
+        _setField(["isSubmitting"], isSubmitting);
+      },
+      validity: {
+        email(isValid: boolean) {
+          _setField(["validity", "email"], isValid);
+        },
+        emailConfirmation(isValid: boolean) {
+          _setField(["validity", "emailConfirmation"], isValid);
+        },
+        password(isValid: boolean) {
+          _setField(["validity", "password"], isValid);
+        },
+        confirmPassword(isValid: boolean) {
+          _setField(["validity", "confirmPassword"], isValid);
+        },
+      },
+    }),
+    [_setField]
+  );
 
   const getCredentials = useCallback((): RegistrationCredentials | null => {
     if (!isFormValid) return null;
@@ -105,13 +135,7 @@ export const useRegistrationForm = () => {
     confirmPasswordError,
     isFormValid,
     isSubmitting: state.isSubmitting,
-    setEmail,
-    setEmailConfirmation,
-    setPassword,
-    setConfirmPassword,
-    setEmailValidity,
-    setPasswordValidity,
-    setIsSubmitting,
+    setField,
     getCredentials,
   };
 };
