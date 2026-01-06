@@ -1,8 +1,7 @@
 import React from "react";
 import { StatusBar } from "expo-status-bar";
 
-import { setupAuthHandlers } from "@entities/auth";
-
+import { setupAuthHandlers } from "./lib";
 import { RouterProvider } from "./providers";
 
 setupAuthHandlers();

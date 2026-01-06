@@ -1,16 +1,16 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
-import { useAuthStatus, useInitializeAuth } from "@entities/auth";
+import { useUserStatus, useInitializeUser } from "@entities/user";
 import { AuthNavigator } from "../navigation/ui/AuthNavigator";
 import { LoadingOverlay } from "@shared/ui";
 import { RootStackNavigator } from "@app/navigation";
 
 export const RouterProvider = () => {
-  const { isLoading } = useAuthStatus();
+  const { isLoading } = useUserStatus();
 
-  // Initialize auth on app start
-  useInitializeAuth();
+  // Initialize user on app start
+  useInitializeUser();
 
   if (isLoading) {
     return <LoadingOverlay />;

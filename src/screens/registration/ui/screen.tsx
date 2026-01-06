@@ -1,6 +1,6 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ScreenLayout } from "@shared/ui";
-import { AuthLayout } from "@entities/auth";
+import { AuthLayout } from "@widgets/auth-layout";
 import { AppRoutes, type RootStackParamList } from "@shared/routes";
 import { RegistrationForm } from "@features/registration";
 

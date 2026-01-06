@@ -1,7 +1,8 @@
 import { Alert } from "react-native";
 
 import { IconButton } from "@shared/ui";
-import { authActions } from "@entities/auth";
+import { userActions } from "@entities/user";
+import { logoutApi } from "../api";
 import { showErrorAlert } from "@shared/utils/alert";
 
 interface LogoutButtonProps {
@@ -21,7 +22,8 @@ export const LogoutButton = ({ onLogout, color }: LogoutButtonProps) => {
         style: "destructive",
         onPress: async () => {
           try {
-            await authActions.logout();
+            await logoutApi.logout();
+            userActions.reset();
             onLogout?.();
           } catch (error) {
             showErrorAlert("Failed to logout", error);

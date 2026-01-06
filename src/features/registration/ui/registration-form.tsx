@@ -1,12 +1,12 @@
 import { View } from "react-native";
 
-import { Button, EmailInput, Input } from "@shared/ui";
+import { Button, EmailInput, PasswordInput } from "@shared/ui";
 import { useRegistrationForm } from "../model/useRegistrationForm";
-import { authApi, authActions } from "@entities/auth";
+import { registrationApi } from "../api";
+import { userActions } from "@entities/user";
 import { showErrorAlert } from "@shared/utils/alert";
 import { useAbortController } from "@shared/hooks";
 
-// TODO: Refactor this component to fields etc
 export const RegistrationForm = () => {
   const getSignal = useAbortController();
   const {
@@ -14,26 +14,31 @@ export const RegistrationForm = () => {
     emailConfirmation,
     password,
     confirmPassword,
-    errors,
+    emailConfirmationError,
+    confirmPasswordError,
+    isFormValid,
     isSubmitting,
     setEmail,
     setEmailConfirmation,
     setPassword,
     setConfirmPassword,
+    setEmailValidity,
+    setPasswordValidity,
     setIsSubmitting,
-    handleSubmit,
+    getCredentials,
   } = useRegistrationForm();
 
   const onSubmit = async () => {
-    try {
-      const credentials = handleSubmit();
+    const credentials = getCredentials();
+    if (!credentials) return;
 
-      if (credentials) {
-        const user = await authApi.register(credentials, {
-          signal: getSignal(),
-        });
-        authActions.setUser(user);
-      }
+    setIsSubmitting(true);
+
+    try {
+      const user = await registrationApi.register(credentials, {
+        signal: getSignal(),
+      });
+      userActions.setUser(user);
     } catch (error) {
       showErrorAlert("Registration failed", error);
     } finally {
@@ -47,7 +52,7 @@ export const RegistrationForm = () => {
         label="Email"
         value={email}
         onChangeText={setEmail}
-        errorMessage={errors.email}
+        onValidationChange={setEmailValidity}
         placeholder="Enter your email"
         required
       />
@@ -56,34 +61,31 @@ export const RegistrationForm = () => {
         label="Email Confirmation"
         value={emailConfirmation}
         onChangeText={setEmailConfirmation}
-        errorMessage={errors.emailConfirmation}
-        placeholder="Enter your email confirmation"
-        required
+        errorMessage={emailConfirmationError}
+        placeholder="Confirm your email"
       />
 
-      <Input
+      <PasswordInput
         label="Password"
         value={password}
         onChangeText={setPassword}
-        errorMessage={errors.password}
+        onValidationChange={setPasswordValidity}
         placeholder="Enter your password"
-        secureTextEntry
-        autoComplete="password-new"
+        required
       />
 
-      <Input
+      <PasswordInput
         label="Confirm Password"
         value={confirmPassword}
         onChangeText={setConfirmPassword}
-        errorMessage={errors.confirmPassword}
+        errorMessage={confirmPasswordError}
         placeholder="Confirm your password"
-        secureTextEntry
-        autoComplete="password-new"
+        validateOnChange={false}
       />
 
       <Button
         onPress={onSubmit}
-        disabled={isSubmitting}
+        disabled={isSubmitting || !isFormValid}
         style={{ marginTop: 24 }}
       >
         {isSubmitting ? "Creating Account..." : "Register"}

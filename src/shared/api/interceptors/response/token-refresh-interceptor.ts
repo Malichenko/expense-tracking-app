@@ -3,7 +3,7 @@ import type {
   AxiosInstance,
   InternalAxiosRequestConfig,
 } from "axios";
-import { authHandlersRegistry } from "../../auth-handlers-registry";
+import { authHandlersRegistry } from "../../auth";
 import { createTokenRefreshQueue } from "./lib";
 
 interface RetryableRequest extends InternalAxiosRequestConfig {

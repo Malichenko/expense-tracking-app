@@ -2,7 +2,8 @@ import { View } from "react-native";
 
 import { Button, EmailInput, PasswordInput } from "@shared/ui";
 import { useLoginForm } from "../model/useLoginForm";
-import { authApi, authActions } from "@entities/auth";
+import { loginApi } from "../api";
+import { userActions } from "@entities/user";
 import { showErrorAlert } from "@shared/utils/alert";
 import { useAbortController } from "@shared/hooks";
 
@@ -11,25 +12,25 @@ export const LoginForm = () => {
   const {
     email,
     password,
-    errors,
+    isFormValid,
     isSubmitting,
-    setEmail,
-    setPassword,
-    handleSubmit,
-    setIsSubmitting,
+    fieldSetter,
+    getCredentials,
   } = useLoginForm();
 
   const onSubmit = async () => {
+    const credentials = getCredentials();
+    if (!credentials) return;
+
+    fieldSetter.setIsSubmitting(true);
+
     try {
-      const credentials = await handleSubmit();
-      if (credentials) {
-        const user = await authApi.login(credentials, { signal: getSignal() });
-        authActions.setUser(user);
-      }
+      const user = await loginApi.login(credentials, { signal: getSignal() });
+      userActions.setUser(user);
     } catch (error) {
       showErrorAlert("Login failed", error);
     } finally {
-      setIsSubmitting(false);
+      fieldSetter.setIsSubmitting(false);
     }
   };
 
@@ -38,8 +39,8 @@ export const LoginForm = () => {
       <EmailInput
         label="Email"
         value={email}
-        onChangeText={setEmail}
-        errorMessage={errors.email}
+        onChangeText={fieldSetter.setEmail}
+        onValidationChange={fieldSetter.setEmailValidity}
         placeholder="Enter your email"
         required
       />
@@ -47,15 +48,15 @@ export const LoginForm = () => {
       <PasswordInput
         label="Password"
         value={password}
-        onChangeText={setPassword}
-        errorMessage={errors.password}
+        onChangeText={fieldSetter.setPassword}
+        onValidationChange={fieldSetter.setPasswordValidity}
         placeholder="Enter your password"
         required
       />
 
       <Button
         onPress={onSubmit}
-        disabled={isSubmitting}
+        disabled={isSubmitting || !isFormValid}
         style={{ marginTop: 24 }}
       >
         {isSubmitting ? "Logging in..." : "Login"}

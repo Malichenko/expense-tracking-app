@@ -2,7 +2,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { ScreenLayout } from "@shared/ui";
 import { AppRoutes, type RootStackParamList } from "@shared/routes";
-import { AuthLayout } from "@entities/auth";
+import { AuthLayout } from "@widgets/auth-layout";
 import { LoginForm } from "@features/login";
 
 export const LoginScreen = ({

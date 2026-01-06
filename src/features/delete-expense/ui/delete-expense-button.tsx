@@ -1,7 +1,7 @@
 import { IconButton } from "@shared/ui";
 import theme from "@shared/config/theme";
 import { useExpenseActions } from "@entities/expense";
-import { useUser } from "@entities/auth";
+import { useUser } from "@entities/user";
 import { useAbortController } from "@shared/hooks";
 import { showErrorAlert } from "@shared/utils/alert";
 

@@ -2,7 +2,7 @@ import { ScreenLayout, LoadingOverlay, ErrorOverlay } from "@shared/ui";
 import { ExpensesOutput } from "@widgets/expenses-output";
 import { AppRoutes, useAppNavigation } from "@shared/routes";
 import { useInitializeExpenses, useRecentExpenses } from "@entities/expense";
-import { useUser } from "@entities/auth";
+import { useUser } from "@entities/user";
 
 export const RecentExpensesScreen = () => {
   const navigation = useAppNavigation();

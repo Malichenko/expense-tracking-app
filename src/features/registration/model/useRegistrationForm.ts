@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
-import { RegistrationCredentials } from "@entities/auth";
+import type { RegistrationCredentials } from "./types";
 
 interface RegistrationFormState {
   email: string;
   emailConfirmation: string;
   password: string;
   confirmPassword: string;
-  errors: {
-    email?: string;
-    emailConfirmation?: string;
-    password?: string;
-    confirmPassword?: string;
+  validity: {
+    email: boolean;
+    emailConfirmation: boolean;
+    password: boolean;
+    confirmPassword: boolean;
   };
   isSubmitting: boolean;
 }
@@ -22,81 +22,96 @@ export const useRegistrationForm = () => {
     emailConfirmation: "",
     password: "",
     confirmPassword: "",
-    errors: {},
+    validity: {
+      email: false,
+      emailConfirmation: true,
+      password: false,
+      confirmPassword: false,
+    },
     isSubmitting: false,
   });
 
-  const validateForm = (): boolean => {
-    const errors: RegistrationFormState["errors"] = {};
-
-    if (!state.email.trim()) {
-      errors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) {
-      errors.email = "Please enter a valid email address";
+  const emailConfirmationError = useMemo(() => {
+    if (!state.emailConfirmation.trim()) return undefined;
+    if (state.emailConfirmation.trim() !== state.email.trim()) {
+      return "Email confirmation must match";
     }
+    return undefined;
+  }, [state.email, state.emailConfirmation]);
 
-    if (!state.password.trim()) {
-      errors.password = "Password is required";
-    } else if (state.password.length < 6) {
-      errors.password = "Password must be at least 6 characters";
+  const confirmPasswordError = useMemo(() => {
+    if (!state.confirmPassword.trim()) return "Please confirm your password";
+    if (state.password !== state.confirmPassword) {
+      return "Passwords don't match";
     }
+    return undefined;
+  }, [state.password, state.confirmPassword]);
 
-    if (!state.confirmPassword.trim()) {
-      errors.confirmPassword = "Please confirm your password";
-    } else if (state.password !== state.confirmPassword) {
-      errors.confirmPassword = "Passwords don't match";
-    }
+  const isFormValid =
+    state.validity.email &&
+    state.validity.password &&
+    !emailConfirmationError &&
+    !confirmPasswordError;
 
-    if (
-      state.emailConfirmation.trim() &&
-      state.emailConfirmation.trim() !== state.email
-    ) {
-      errors.emailConfirmation = "Email confirmation must match the email";
-    }
+  const setEmail = useCallback((email: string) => {
+    setState((prev) => ({ ...prev, email }));
+  }, []);
 
-    setState((prev) => ({ ...prev, errors }));
-    return Object.keys(errors).length === 0;
-  };
+  const setEmailConfirmation = useCallback((emailConfirmation: string) => {
+    setState((prev) => ({ ...prev, emailConfirmation }));
+  }, []);
 
-  const setField = <Field extends keyof Omit<RegistrationFormState, "errors">>(
-    field: Field,
-    value: RegistrationFormState[Field]
-  ) => {
+  const setPassword = useCallback((password: string) => {
+    setState((prev) => ({ ...prev, password }));
+  }, []);
+
+  const setConfirmPassword = useCallback((confirmPassword: string) => {
+    setState((prev) => ({ ...prev, confirmPassword }));
+  }, []);
+
+  const setEmailValidity = useCallback((isValid: boolean) => {
     setState((prev) => ({
       ...prev,
-      [field]: value,
-      errors: { ...prev.errors, [field]: undefined },
+      validity: { ...prev.validity, email: isValid },
     }));
-  };
+  }, []);
 
-  const handleSubmit = () => {
-    if (!validateForm()) return;
+  const setPasswordValidity = useCallback((isValid: boolean) => {
+    setState((prev) => ({
+      ...prev,
+      validity: { ...prev.validity, password: isValid },
+    }));
+  }, []);
 
-    setState((prev) => ({ ...prev, isSubmitting: true }));
+  const setIsSubmitting = useCallback((isSubmitting: boolean) => {
+    setState((prev) => ({ ...prev, isSubmitting }));
+  }, []);
 
-    const credentials: RegistrationCredentials = {
+  const getCredentials = useCallback((): RegistrationCredentials | null => {
+    if (!isFormValid) return null;
+
+    return {
       email: state.email.trim(),
       password: state.password,
     };
-
-    return credentials;
-  };
+  }, [isFormValid, state.email, state.password]);
 
   return {
     email: state.email,
+    emailConfirmation: state.emailConfirmation,
     password: state.password,
     confirmPassword: state.confirmPassword,
-    emailConfirmation: state.emailConfirmation,
-    errors: state.errors,
+    emailConfirmationError,
+    confirmPasswordError,
+    isFormValid,
     isSubmitting: state.isSubmitting,
-    setEmail: (email: string) => setField("email", email),
-    setPassword: (password: string) => setField("password", password),
-    setIsSubmitting: (isSubmitting: boolean) =>
-      setField("isSubmitting", isSubmitting),
-    setConfirmPassword: (confirmPassword: string) =>
-      setField("confirmPassword", confirmPassword),
-    setEmailConfirmation: (emailConfirmation: string) =>
-      setField("emailConfirmation", emailConfirmation),
-    handleSubmit,
+    setEmail,
+    setEmailConfirmation,
+    setPassword,
+    setConfirmPassword,
+    setEmailValidity,
+    setPasswordValidity,
+    setIsSubmitting,
+    getCredentials,
   };
 };
