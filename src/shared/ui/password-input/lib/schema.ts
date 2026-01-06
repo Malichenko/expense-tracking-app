@@ -1,4 +1,4 @@
-import { conditional, pipe } from "remeda";
+import { pipe } from "remeda";
 import { z, type ZodString } from "zod";
 import {
   requiredValidator,
@@ -39,5 +39,5 @@ export const createPasswordSchema = ({
     uppercaseValidator(errorMessages.uppercase!),
     numberValidator(errorMessages.number!),
     specialCharValidator(errorMessages.specialChar!),
-    conditional([() => required, requiredValidator(errorMessages.required!)])
+    requiredValidator({ required, errorMessage: errorMessages.required! })
   );

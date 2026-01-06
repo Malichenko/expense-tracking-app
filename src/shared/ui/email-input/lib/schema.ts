@@ -1,4 +1,4 @@
-import { conditional, pipe } from "remeda";
+import { pipe } from "remeda";
 import { z, type ZodString } from "zod";
 import { emailValidator, requiredValidator } from "./validators";
 
@@ -22,5 +22,5 @@ export const createEmailSchema = ({
   pipe(
     z.string(),
     emailValidator(errorMessages.invalid!),
-    conditional([() => required, requiredValidator(errorMessages.required!)])
+    requiredValidator({ required, errorMessage: errorMessages.required! })
   );

@@ -7,8 +7,11 @@ export const emailValidator = (invalidMsg: string) => (string: ZodString) => {
 };
 
 export const requiredValidator =
-  (requiredMsg: string) => (string: ZodString) => {
-    return string.min(1, {
-      message: requiredMsg,
-    });
+  ({ required, errorMessage }: { required: boolean; errorMessage: string }) =>
+  (string: ZodString) => {
+    return required
+      ? string.min(1, {
+          message: errorMessage,
+        })
+      : string;
   };

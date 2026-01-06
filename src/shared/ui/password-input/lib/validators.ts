@@ -1,9 +1,9 @@
 import { type ZodString } from "zod";
 
 export const requiredValidator =
-  (errorMessage: string) =>
+  ({ required, errorMessage }: { required: boolean; errorMessage: string }) =>
   (schema: ZodString): ZodString =>
-    schema.min(1, { message: errorMessage });
+    required ? schema.min(1, { message: errorMessage }) : schema;
 
 export const minLengthValidator =
   (minLength: number, errorMessage: string) =>
