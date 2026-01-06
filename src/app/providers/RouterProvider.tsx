@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
 import {
@@ -11,12 +11,19 @@ import { LoadingOverlay } from "@shared/ui";
 import { RootStackNavigator } from "@app/navigation";
 import { conditional, pipe, isTruthy } from "remeda";
 
-const getProtectedNavigator = (isAuthenticated: boolean) =>
+interface ProtectedNavigatorProps {
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
+
+const ProtectedNavigator: FC<ProtectedNavigatorProps> = (flags) =>
   pipe(
-    isAuthenticated,
-    conditional([isTruthy, () => <RootStackNavigator />], () => (
-      <AuthNavigator />
-    ))
+    flags,
+    conditional(
+      [({ isLoading }) => isTruthy(isLoading), LoadingOverlay],
+      [({ isAuthenticated }) => isTruthy(isAuthenticated), RootStackNavigator],
+      AuthNavigator
+    )
   );
 
 export const RouterProvider = () => {
@@ -26,13 +33,12 @@ export const RouterProvider = () => {
   // Initialize user on app start
   useInitializeUser();
 
-  if (isLoading) {
-    return <LoadingOverlay />;
-  }
-
   return (
     <NavigationContainer>
-      {getProtectedNavigator(isAuthenticated)}
+      <ProtectedNavigator
+        isAuthenticated={isAuthenticated}
+        isLoading={isLoading}
+      />
     </NavigationContainer>
   );
 };
