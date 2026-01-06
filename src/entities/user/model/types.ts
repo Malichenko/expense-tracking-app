@@ -3,9 +3,6 @@ import type { AsyncOptions } from "@shared/api";
 export interface User {
   uid: string;
   email: string | null;
-  displayName: string | null;
-  emailVerified: boolean;
-  photoURL: string | null;
 }
 
 export interface UserState {

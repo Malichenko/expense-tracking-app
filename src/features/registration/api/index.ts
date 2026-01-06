@@ -1,11 +1,10 @@
 import {
   authApiClient,
   storeAuthTokens,
-  mapFirebaseUserToUser,
   type AsyncOptions,
   type FirebaseAuthResponse,
 } from "@shared/api";
-import type { User } from "@entities/user";
+import { mapFirebaseToUser, type User } from "@entities/user";
 import type { RegistrationCredentials } from "../model/types";
 
 export const registrationApi = {
@@ -25,6 +24,6 @@ export const registrationApi = {
 
     await storeAuthTokens(response.data);
 
-    return mapFirebaseUserToUser(response.data);
+    return mapFirebaseToUser(response.data);
   },
 };

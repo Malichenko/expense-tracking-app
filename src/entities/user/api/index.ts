@@ -3,13 +3,11 @@ import { tokenStorage } from "@shared/secure-storage";
 import { refreshToken } from "@shared/api/auth";
 import type { User } from "../model/types";
 import type { FirebaseLookupResponse } from "@shared/api/auth/types";
-
-interface UserApiOptions {
-  signal?: AbortSignal;
-}
+import type { AsyncOptions } from "@shared/api";
+import { mapFirebaseToUser } from "../lib";
 
 export const userApi = {
-  async getCurrentUser({ signal }: UserApiOptions = {}): Promise<User | null> {
+  async getCurrentUser({ signal }: AsyncOptions = {}): Promise<User | null> {
     const hasTokens = await tokenStorage.hasTokens();
 
     if (!hasTokens) {
@@ -39,19 +37,13 @@ export const userApi = {
         { signal }
       );
 
-      const userData = response.data.users[0];
+      const userData = response.data.users.at(0);
 
       if (!userData) {
         return null;
       }
 
-      return {
-        uid: userData.localId,
-        email: userData.email,
-        displayName: userData.displayName ?? null,
-        emailVerified: userData.emailVerified,
-        photoURL: userData.photoUrl ?? null,
-      };
+      return mapFirebaseToUser(userData);
     } catch {
       await tokenStorage.clearTokens();
       return null;
